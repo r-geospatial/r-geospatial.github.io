@@ -11,7 +11,7 @@
 
 <meta name="author" content="Alexandru T. Codilean" />
 
-<meta name="date" content="2025-02-18" />
+<meta name="date" content="2025-02-19" />
 
 <title>Brief introduction to R</title>
 
@@ -482,7 +482,7 @@ div.tocify {
 <h3 class="subtitle">SCII205: Introductory Geospatial Analysis /
 Practical No. 1</h3>
 <h4 class="author">Alexandru T. Codilean</h4>
-<h4 class="date">2025-02-18</h4>
+<h4 class="date">2025-02-19</h4>
 
 </div>
 
@@ -779,7 +779,10 @@ data.</p>
 as a data frame. The following example assumes that you have a file
 named “east_coast_rivers.csv” in a sub-folder called “Data” that is
 located in your working directory.</p>
-<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">&quot;./data/data_intro/east_coast_rivers.csv&quot;</span>, <span class="at">header =</span> <span class="cn">TRUE</span>, <span class="at">sep =</span> <span class="st">&quot;,&quot;</span>) <span class="co"># Modify path and file name as needed</span></span></code></pre></div>
+<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" tabindex="-1"></a><span class="co"># Modify path and file name as needed</span></span>
+<span id="cb46-2"><a href="#cb46-2" tabindex="-1"></a>data <span class="ot">&lt;-</span> </span>
+<span id="cb46-3"><a href="#cb46-3" tabindex="-1"></a>  <span class="fu">read.csv</span>(<span class="st">&quot;./data/data_intro/east_coast_rivers.csv&quot;</span>, </span>
+<span id="cb46-4"><a href="#cb46-4" tabindex="-1"></a>           <span class="at">header =</span> <span class="cn">TRUE</span>, <span class="at">sep =</span> <span class="st">&quot;,&quot;</span>)</span></code></pre></div>
 <p>The CSV file contains cosmogenic beryllium-10 derived erosion rates
 (<code>Erosion_Rate</code>) and various topographic and climatic metrics
 (e.g., <code>Mean_Slope</code> and <code>Mean_Rainfall</code>) for
@@ -799,7 +802,9 @@ tributary (<code>Group_No</code> = 0).</p>
 delimiter. If the CSV file you have uses a different delimiter (such as
 a semicolon), you can use the <code>sep</code> parameter to specify the
 delimiter used:</p>
-<div class="sourceCode" id="cb48"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" tabindex="-1"></a>data_semicolon <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">&quot;./data/data01/east_coast_rivers_semicolon.csv&quot;</span>, <span class="at">header =</span> <span class="cn">TRUE</span>, <span class="at">sep =</span> <span class="st">&quot;;&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb48"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" tabindex="-1"></a>data_semicolon <span class="ot">&lt;-</span> </span>
+<span id="cb48-2"><a href="#cb48-2" tabindex="-1"></a>  <span class="fu">read.csv</span>(<span class="st">&quot;./data/data01/east_coast_rivers_semicolon.csv&quot;</span>, </span>
+<span id="cb48-3"><a href="#cb48-3" tabindex="-1"></a>           <span class="at">header =</span> <span class="cn">TRUE</span>, <span class="at">sep =</span> <span class="st">&quot;;&quot;</span>)</span></code></pre></div>
 </div>
 <div id="writing-data-to-a-file" class="section level2">
 <h2>Writing Data to a File</h2>
@@ -807,15 +812,21 @@ delimiter used:</p>
 <code>write.csv()</code> to export a data frame to a CSV file. In the
 next example, we drop the second and fourth columns from the data frame
 and then save to a new file:</p>
-<div class="sourceCode" id="cb49"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" tabindex="-1"></a>columns_to_drop <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;Group&quot;</span>,<span class="st">&quot;Drainage_Basin&quot;</span>) <span class="co"># Specify the columns to drop.</span></span>
-<span id="cb49-2"><a href="#cb49-2" tabindex="-1"></a>data_clean <span class="ot">&lt;-</span> data[, <span class="sc">!</span>(<span class="fu">names</span>(data) <span class="sc">%in%</span> columns_to_drop)] <span class="co"># Keep only columns NOT in &#39;columns_to_drop&#39;</span></span>
-<span id="cb49-3"><a href="#cb49-3" tabindex="-1"></a><span class="fu">head</span>(data_clean)</span></code></pre></div>
+<div class="sourceCode" id="cb49"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" tabindex="-1"></a><span class="co"># Specify the columns to drop.</span></span>
+<span id="cb49-2"><a href="#cb49-2" tabindex="-1"></a>columns_to_drop <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;Group&quot;</span>,<span class="st">&quot;Drainage_Basin&quot;</span>) </span>
+<span id="cb49-3"><a href="#cb49-3" tabindex="-1"></a></span>
+<span id="cb49-4"><a href="#cb49-4" tabindex="-1"></a><span class="co"># Keep only columns NOT in &#39;columns_to_drop&#39;</span></span>
+<span id="cb49-5"><a href="#cb49-5" tabindex="-1"></a>data_clean <span class="ot">&lt;-</span> data[, <span class="sc">!</span>(<span class="fu">names</span>(data) <span class="sc">%in%</span> columns_to_drop)] </span>
+<span id="cb49-6"><a href="#cb49-6" tabindex="-1"></a><span class="fu">head</span>(data_clean)</span></code></pre></div>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
 {"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["SMPID2"],"name":[1],"type":["chr"],"align":["left"]},{"label":["Group_No"],"name":[2],"type":["int"],"align":["right"]},{"label":["Basin_Code"],"name":[3],"type":["int"],"align":["right"]},{"label":["Area_km2"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["Cent_Lat"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["Erosion_Rate"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["Erosion_Rate_Error"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["Mean_Slope"],"name":[8],"type":["dbl"],"align":["right"]},{"label":["Mean_Elevation"],"name":[9],"type":["dbl"],"align":["right"]},{"label":["Mean_Channel_Steepness"],"name":[10],"type":["dbl"],"align":["right"]},{"label":["Mean_Relief"],"name":[11],"type":["dbl"],"align":["right"]},{"label":["Mean_Rainfall"],"name":[12],"type":["dbl"],"align":["right"]}],"data":[{"1":"UOW01-MTC","2":"1","3":"1","4":"3890.63","5":"-37.34","6":"10.92","7":"2.33","8":"363.5","9":"792.96","10":"154.03","11":"589.34","12":"1093.92","_rn_":"1"},{"1":"UOW01-TMB","2":"1","3":"1","4":"2781.44","5":"-37.34","6":"13.18","7":"2.89","8":"252.7","9":"593.71","10":"111.71","11":"428.88","12":"854.66","_rn_":"2"},{"1":"UOW01-SNW","2":"1","3":"2","4":"13551.32","5":"-36.81","6":"9.79","7":"2.06","8":"185.3","9":"888.45","10":"103.59","11":"343.07","12":"829.88","_rn_":"3"},{"1":"UOW02-GTG","2":"0","3":"2","4":"5.80","5":"-36.36","6":"24.57","7":"4.81","8":"298.7","9":"1837.06","10":"103.52","11":"525.99","12":"1641.86","_rn_":"4"},{"1":"UOW02-PPC","2":"0","3":"2","4":"3.63","5":"-36.40","6":"17.81","7":"3.55","8":"143.8","9":"1748.80","10":"66.16","11":"371.67","12":"1577.14","_rn_":"5"},{"1":"UOW02-SNW-CP","2":"0","3":"2","4":"20.67","5":"-36.45","6":"18.17","7":"3.62","8":"155.4","9":"1968.63","10":"87.65","11":"358.27","12":"1743.24","_rn_":"6"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
-<div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" tabindex="-1"></a><span class="fu">write.csv</span>(data_clean, <span class="at">file =</span> <span class="st">&quot;./data/data_intro/east_coast_rivers_cleaned.csv&quot;</span>, <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" tabindex="-1"></a><span class="co"># Write cleaned data to file</span></span>
+<span id="cb50-2"><a href="#cb50-2" tabindex="-1"></a><span class="fu">write.csv</span>(data_clean, </span>
+<span id="cb50-3"><a href="#cb50-3" tabindex="-1"></a>          <span class="at">file =</span> <span class="st">&quot;./data/data_intro/east_coast_rivers_cleaned.csv&quot;</span>, </span>
+<span id="cb50-4"><a href="#cb50-4" tabindex="-1"></a>          <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
 </div>
 </div>
 <div id="plotting-in-r" class="section level1">
@@ -917,28 +928,31 @@ top of each histogram:</p>
 <div class="sourceCode" id="cb55"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" tabindex="-1"></a><span class="co"># Define a vector of column names for which you want smoother histograms</span></span>
 <span id="cb55-2"><a href="#cb55-2" tabindex="-1"></a>cols <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;Mean_Slope&quot;</span>, <span class="st">&quot;Mean_Rainfall&quot;</span>,<span class="st">&quot;Erosion_Rate&quot;</span>)</span>
 <span id="cb55-3"><a href="#cb55-3" tabindex="-1"></a></span>
-<span id="cb55-4"><a href="#cb55-4" tabindex="-1"></a><span class="co"># Set up the plotting area: 1 row with as many columns as there are elements in &#39;cols&#39;</span></span>
-<span id="cb55-5"><a href="#cb55-5" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="fu">length</span>(cols)))</span>
-<span id="cb55-6"><a href="#cb55-6" tabindex="-1"></a></span>
-<span id="cb55-7"><a href="#cb55-7" tabindex="-1"></a><span class="co"># Loop through each specified column and plot its histogram with an overlaid density curve</span></span>
-<span id="cb55-8"><a href="#cb55-8" tabindex="-1"></a><span class="cf">for</span> (col <span class="cf">in</span> cols) {</span>
-<span id="cb55-9"><a href="#cb55-9" tabindex="-1"></a>  <span class="co"># Extract data for the current column</span></span>
-<span id="cb55-10"><a href="#cb55-10" tabindex="-1"></a>  x <span class="ot">&lt;-</span> data[[col]]</span>
-<span id="cb55-11"><a href="#cb55-11" tabindex="-1"></a>  </span>
-<span id="cb55-12"><a href="#cb55-12" tabindex="-1"></a>  <span class="co"># Plot histogram with density scaling (freq = FALSE) so that the y-axis represents a density</span></span>
-<span id="cb55-13"><a href="#cb55-13" tabindex="-1"></a>  <span class="fu">hist</span>(x,</span>
-<span id="cb55-14"><a href="#cb55-14" tabindex="-1"></a>       <span class="at">main =</span> <span class="fu">paste</span>(<span class="st">&quot;Histogram of&quot;</span>, col),</span>
-<span id="cb55-15"><a href="#cb55-15" tabindex="-1"></a>       <span class="at">xlab =</span> col,</span>
-<span id="cb55-16"><a href="#cb55-16" tabindex="-1"></a>       <span class="at">col =</span> <span class="st">&quot;lightgreen&quot;</span>,</span>
-<span id="cb55-17"><a href="#cb55-17" tabindex="-1"></a>       <span class="at">border =</span> <span class="st">&quot;black&quot;</span>,</span>
-<span id="cb55-18"><a href="#cb55-18" tabindex="-1"></a>       <span class="at">freq =</span> <span class="cn">FALSE</span>)  <span class="co"># Use density instead of counts</span></span>
-<span id="cb55-19"><a href="#cb55-19" tabindex="-1"></a>  </span>
-<span id="cb55-20"><a href="#cb55-20" tabindex="-1"></a>  <span class="co"># Compute the kernel density estimate</span></span>
-<span id="cb55-21"><a href="#cb55-21" tabindex="-1"></a>  dens <span class="ot">&lt;-</span> <span class="fu">density</span>(x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb55-4"><a href="#cb55-4" tabindex="-1"></a><span class="co"># Set up the plotting area:</span></span>
+<span id="cb55-5"><a href="#cb55-5" tabindex="-1"></a><span class="co"># 1 row with as many columns as there are elements in &#39;cols&#39;</span></span>
+<span id="cb55-6"><a href="#cb55-6" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="fu">length</span>(cols)))</span>
+<span id="cb55-7"><a href="#cb55-7" tabindex="-1"></a></span>
+<span id="cb55-8"><a href="#cb55-8" tabindex="-1"></a><span class="co"># Loop through each specified column and plot its histogram</span></span>
+<span id="cb55-9"><a href="#cb55-9" tabindex="-1"></a><span class="co"># with an overlaid density curve</span></span>
+<span id="cb55-10"><a href="#cb55-10" tabindex="-1"></a><span class="cf">for</span> (col <span class="cf">in</span> cols) {</span>
+<span id="cb55-11"><a href="#cb55-11" tabindex="-1"></a>  <span class="co"># Extract data for the current column</span></span>
+<span id="cb55-12"><a href="#cb55-12" tabindex="-1"></a>  x <span class="ot">&lt;-</span> data[[col]]</span>
+<span id="cb55-13"><a href="#cb55-13" tabindex="-1"></a>  </span>
+<span id="cb55-14"><a href="#cb55-14" tabindex="-1"></a>  <span class="co"># Plot histogram with density scaling (freq = FALSE) so that</span></span>
+<span id="cb55-15"><a href="#cb55-15" tabindex="-1"></a>  <span class="co"># the y-axis represents a density</span></span>
+<span id="cb55-16"><a href="#cb55-16" tabindex="-1"></a>  <span class="fu">hist</span>(x,</span>
+<span id="cb55-17"><a href="#cb55-17" tabindex="-1"></a>       <span class="at">main =</span> <span class="fu">paste</span>(<span class="st">&quot;Histogram of&quot;</span>, col),</span>
+<span id="cb55-18"><a href="#cb55-18" tabindex="-1"></a>       <span class="at">xlab =</span> col,</span>
+<span id="cb55-19"><a href="#cb55-19" tabindex="-1"></a>       <span class="at">col =</span> <span class="st">&quot;lightgreen&quot;</span>,</span>
+<span id="cb55-20"><a href="#cb55-20" tabindex="-1"></a>       <span class="at">border =</span> <span class="st">&quot;black&quot;</span>,</span>
+<span id="cb55-21"><a href="#cb55-21" tabindex="-1"></a>       <span class="at">freq =</span> <span class="cn">FALSE</span>)  <span class="co"># Use density instead of counts</span></span>
 <span id="cb55-22"><a href="#cb55-22" tabindex="-1"></a>  </span>
-<span id="cb55-23"><a href="#cb55-23" tabindex="-1"></a>  <span class="co"># Overlay the density curve (kernel density estimate)</span></span>
-<span id="cb55-24"><a href="#cb55-24" tabindex="-1"></a>  <span class="fu">lines</span>(dens, <span class="at">col =</span> <span class="st">&quot;blue&quot;</span>, <span class="at">lwd =</span> <span class="dv">2</span>)</span>
-<span id="cb55-25"><a href="#cb55-25" tabindex="-1"></a>}</span></code></pre></div>
+<span id="cb55-23"><a href="#cb55-23" tabindex="-1"></a>  <span class="co"># Compute the kernel density estimate</span></span>
+<span id="cb55-24"><a href="#cb55-24" tabindex="-1"></a>  dens <span class="ot">&lt;-</span> <span class="fu">density</span>(x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb55-25"><a href="#cb55-25" tabindex="-1"></a>  </span>
+<span id="cb55-26"><a href="#cb55-26" tabindex="-1"></a>  <span class="co"># Overlay the density curve (kernel density estimate)</span></span>
+<span id="cb55-27"><a href="#cb55-27" tabindex="-1"></a>  <span class="fu">lines</span>(dens, <span class="at">col =</span> <span class="st">&quot;blue&quot;</span>, <span class="at">lwd =</span> <span class="dv">2</span>)</span>
+<span id="cb55-28"><a href="#cb55-28" tabindex="-1"></a>}</span></code></pre></div>
 <p><img src="r1_files/figure-html/unnamed-chunk-21-1.png" width="80%" style="display: block; margin: auto;" /></p>
 <p><strong>Explanation:</strong></p>
 <ul>
@@ -1019,9 +1033,9 @@ river basin (i.e., we group data together based on
 <span id="cb59-2"><a href="#cb59-2" tabindex="-1"></a><span class="co"># Below &quot;data&quot; is the name we assigned earlier to the CSV file</span></span>
 <span id="cb59-3"><a href="#cb59-3" tabindex="-1"></a></span>
 <span id="cb59-4"><a href="#cb59-4" tabindex="-1"></a>filtered_data <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span></span>
-<span id="cb59-5"><a href="#cb59-5" tabindex="-1"></a>  <span class="fu">filter</span>(Group_No <span class="sc">==</span> <span class="dv">0</span>) <span class="sc">%&gt;%</span> <span class="co"># Leep only basins with Group_No = 0</span></span>
+<span id="cb59-5"><a href="#cb59-5" tabindex="-1"></a>  <span class="fu">filter</span>(Group_No <span class="sc">==</span> <span class="dv">0</span>) <span class="sc">%&gt;%</span> <span class="co"># Leave only basins with Group_No = 0</span></span>
 <span id="cb59-6"><a href="#cb59-6" tabindex="-1"></a>  <span class="fu">group_by</span>(Basin_Code) <span class="sc">%&gt;%</span>  <span class="co"># Group by Basin_Code</span></span>
-<span id="cb59-7"><a href="#cb59-7" tabindex="-1"></a>  <span class="fu">summarise_at</span>(<span class="fu">c</span>(<span class="st">&quot;Erosion_Rate&quot;</span>, <span class="st">&quot;Mean_Slope&quot;</span>),<span class="fu">list</span>(mean,median)) <span class="co"># Calculate mean and median</span></span>
+<span id="cb59-7"><a href="#cb59-7" tabindex="-1"></a>  <span class="fu">summarise_at</span>(<span class="fu">c</span>(<span class="st">&quot;Erosion_Rate&quot;</span>, <span class="st">&quot;Mean_Slope&quot;</span>),<span class="fu">list</span>(mean,median)) <span class="co"># Calc. mean and median</span></span>
 <span id="cb59-8"><a href="#cb59-8" tabindex="-1"></a></span>
 <span id="cb59-9"><a href="#cb59-9" tabindex="-1"></a><span class="co"># Display the filtered data</span></span>
 <span id="cb59-10"><a href="#cb59-10" tabindex="-1"></a><span class="fu">head</span>(filtered_data)</span></code></pre></div>
@@ -1050,13 +1064,17 @@ rate values for each basin.</p>
 <span id="cb60-5"><a href="#cb60-5" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
 <span id="cb60-6"><a href="#cb60-6" tabindex="-1"></a></span>
 <span id="cb60-7"><a href="#cb60-7" tabindex="-1"></a><span class="co"># Create the box plot using the filtered data</span></span>
-<span id="cb60-8"><a href="#cb60-8" tabindex="-1"></a><span class="fu">ggplot</span>(filtered_data, <span class="fu">aes</span>(<span class="at">x =</span> Drainage_Basin, <span class="at">y =</span> Erosion_Rate, <span class="at">fill =</span> Drainage_Basin)) <span class="sc">+</span></span>
-<span id="cb60-9"><a href="#cb60-9" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>() <span class="sc">+</span></span>
-<span id="cb60-10"><a href="#cb60-10" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb60-11"><a href="#cb60-11" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">&quot;Box Plot of Erosion Rate by Drainage Basin&quot;</span>,</span>
-<span id="cb60-12"><a href="#cb60-12" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">&quot;Drainage Basin&quot;</span>,</span>
-<span id="cb60-13"><a href="#cb60-13" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">&quot;Erosion Rate [mm/kyr]&quot;</span></span>
-<span id="cb60-14"><a href="#cb60-14" tabindex="-1"></a>  )</span></code></pre></div>
+<span id="cb60-8"><a href="#cb60-8" tabindex="-1"></a><span class="fu">ggplot</span>(filtered_data, </span>
+<span id="cb60-9"><a href="#cb60-9" tabindex="-1"></a>       <span class="fu">aes</span>(<span class="at">x =</span> Drainage_Basin, </span>
+<span id="cb60-10"><a href="#cb60-10" tabindex="-1"></a>           <span class="at">y =</span> Erosion_Rate, </span>
+<span id="cb60-11"><a href="#cb60-11" tabindex="-1"></a>           <span class="at">fill =</span> Drainage_Basin)</span>
+<span id="cb60-12"><a href="#cb60-12" tabindex="-1"></a>       ) <span class="sc">+</span></span>
+<span id="cb60-13"><a href="#cb60-13" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>() <span class="sc">+</span></span>
+<span id="cb60-14"><a href="#cb60-14" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb60-15"><a href="#cb60-15" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">&quot;Box Plot of Erosion Rate by Drainage Basin&quot;</span>,</span>
+<span id="cb60-16"><a href="#cb60-16" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">&quot;Drainage Basin&quot;</span>,</span>
+<span id="cb60-17"><a href="#cb60-17" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">&quot;Erosion Rate [mm/kyr]&quot;</span></span>
+<span id="cb60-18"><a href="#cb60-18" tabindex="-1"></a>  )</span></code></pre></div>
 <p><img src="r1_files/figure-html/unnamed-chunk-25-1.png" width="80%" style="display: block; margin: auto;" /></p>
 <p><strong>Explanation:</strong></p>
 <ul>
@@ -1077,21 +1095,24 @@ aesthetics are mapped accordingly.</p></li>
 <p>In the next example we use <strong>ggplot2</strong> to display
 scatter plots for each drainage basins, plotting erosion rate vs. mean
 slope:</p>
-<div class="sourceCode" id="cb61"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" tabindex="-1"></a><span class="co"># Filter out groups with less than 5 data points and add an index within each group for plotting</span></span>
-<span id="cb61-2"><a href="#cb61-2" tabindex="-1"></a>data_filtered <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span></span>
-<span id="cb61-3"><a href="#cb61-3" tabindex="-1"></a>  <span class="fu">group_by</span>(Drainage_Basin) <span class="sc">%&gt;%</span></span>
-<span id="cb61-4"><a href="#cb61-4" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">n</span>() <span class="sc">&gt;=</span> <span class="dv">5</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb61-5"><a href="#cb61-5" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
-<span id="cb61-6"><a href="#cb61-6" tabindex="-1"></a></span>
-<span id="cb61-7"><a href="#cb61-7" tabindex="-1"></a><span class="co"># Create the scatter plot with separate panels for each Drainage_Basin group</span></span>
-<span id="cb61-8"><a href="#cb61-8" tabindex="-1"></a><span class="fu">ggplot</span>(data_filtered, <span class="fu">aes</span>(<span class="at">x =</span> Mean_Slope, <span class="at">y =</span> Erosion_Rate)) <span class="sc">+</span></span>
-<span id="cb61-9"><a href="#cb61-9" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">&quot;blue&quot;</span>, <span class="at">size =</span> <span class="fl">1.5</span>) <span class="sc">+</span></span>
-<span id="cb61-10"><a href="#cb61-10" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> Drainage_Basin, <span class="at">scales =</span> <span class="st">&quot;free&quot;</span>) <span class="sc">+</span></span>
-<span id="cb61-11"><a href="#cb61-11" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb61-12"><a href="#cb61-12" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">&quot;Scatter Plot of Erosion Rate vs. Mean Slope by Drainage Basin&quot;</span>,</span>
-<span id="cb61-13"><a href="#cb61-13" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">&quot;Mean Basin Slope [m/km]&quot;</span>,</span>
-<span id="cb61-14"><a href="#cb61-14" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">&quot;Erosion Rate [mm/kyr]&quot;</span></span>
-<span id="cb61-15"><a href="#cb61-15" tabindex="-1"></a>  )</span></code></pre></div>
+<div class="sourceCode" id="cb61"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" tabindex="-1"></a><span class="co"># Filter out groups with less than 5 data points and </span></span>
+<span id="cb61-2"><a href="#cb61-2" tabindex="-1"></a><span class="co"># add an index within each group for plotting</span></span>
+<span id="cb61-3"><a href="#cb61-3" tabindex="-1"></a>data_filtered <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span></span>
+<span id="cb61-4"><a href="#cb61-4" tabindex="-1"></a>  <span class="fu">group_by</span>(Drainage_Basin) <span class="sc">%&gt;%</span></span>
+<span id="cb61-5"><a href="#cb61-5" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">n</span>() <span class="sc">&gt;=</span> <span class="dv">5</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb61-6"><a href="#cb61-6" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
+<span id="cb61-7"><a href="#cb61-7" tabindex="-1"></a></span>
+<span id="cb61-8"><a href="#cb61-8" tabindex="-1"></a><span class="co"># Create the scatter plot with separate panels for each Drainage_Basin group</span></span>
+<span id="cb61-9"><a href="#cb61-9" tabindex="-1"></a><span class="fu">ggplot</span>(data_filtered, </span>
+<span id="cb61-10"><a href="#cb61-10" tabindex="-1"></a>       <span class="fu">aes</span>(<span class="at">x =</span> Mean_Slope, <span class="at">y =</span> Erosion_Rate)</span>
+<span id="cb61-11"><a href="#cb61-11" tabindex="-1"></a>       ) <span class="sc">+</span></span>
+<span id="cb61-12"><a href="#cb61-12" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">&quot;blue&quot;</span>, <span class="at">size =</span> <span class="fl">1.5</span>) <span class="sc">+</span></span>
+<span id="cb61-13"><a href="#cb61-13" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> Drainage_Basin, <span class="at">scales =</span> <span class="st">&quot;free&quot;</span>) <span class="sc">+</span></span>
+<span id="cb61-14"><a href="#cb61-14" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb61-15"><a href="#cb61-15" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">&quot;Scatter Plot of Erosion Rate vs. Mean Slope by Drainage Basin&quot;</span>,</span>
+<span id="cb61-16"><a href="#cb61-16" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">&quot;Mean Basin Slope [m/km]&quot;</span>,</span>
+<span id="cb61-17"><a href="#cb61-17" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">&quot;Erosion Rate [mm/kyr]&quot;</span></span>
+<span id="cb61-18"><a href="#cb61-18" tabindex="-1"></a>  )</span></code></pre></div>
 <p><img src="r1_files/figure-html/unnamed-chunk-26-1.png" width="80%" style="display: block; margin: auto;" /></p>
 <p><strong>Explanation:</strong></p>
 <ul>
@@ -1177,13 +1198,13 @@ indicate that these columns should be removed.</p></li>
 <p>Next we will group the data using <code>Drainage_Basin</code> and
 redo the plot:</p>
 <div class="sourceCode" id="cb68"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb68-1"><a href="#cb68-1" tabindex="-1"></a><span class="co"># Plot correlation matrix with groups</span></span>
-<span id="cb68-2"><a href="#cb68-2" tabindex="-1"></a><span class="fu">ggpairs</span>(data_clean,                 <span class="co"># Data frame</span></span>
-<span id="cb68-3"><a href="#cb68-3" tabindex="-1"></a>       <span class="at">columns =</span> <span class="dv">2</span><span class="sc">:</span><span class="dv">6</span>,               <span class="co"># Columns to plot</span></span>
-<span id="cb68-4"><a href="#cb68-4" tabindex="-1"></a>       <span class="fu">aes</span>(<span class="at">color =</span> Drainage_Basin,  <span class="co"># Color by basins</span></span>
-<span id="cb68-5"><a href="#cb68-5" tabindex="-1"></a>           <span class="at">alpha =</span> <span class="fl">0.5</span>),            <span class="co"># Transparency</span></span>
-<span id="cb68-6"><a href="#cb68-6" tabindex="-1"></a>       <span class="at">upper =</span> <span class="fu">list</span>(<span class="at">continuous =</span> <span class="fu">wrap</span>(<span class="st">&quot;cor&quot;</span>, <span class="at">size =</span> <span class="fl">2.5</span>)), <span class="co"># Adjust font size in the upper panels</span></span>
-<span id="cb68-7"><a href="#cb68-7" tabindex="-1"></a>       <span class="at">lower =</span> <span class="fu">list</span>(<span class="at">continuous =</span> <span class="st">&quot;smooth&quot;</span>) <span class="co">#Add trend lines to scatter plots</span></span>
-<span id="cb68-8"><a href="#cb68-8" tabindex="-1"></a>       ) </span></code></pre></div>
+<span id="cb68-2"><a href="#cb68-2" tabindex="-1"></a><span class="fu">ggpairs</span>(data_clean,                       <span class="co"># Data frame</span></span>
+<span id="cb68-3"><a href="#cb68-3" tabindex="-1"></a>   <span class="at">columns =</span> <span class="dv">2</span><span class="sc">:</span><span class="dv">6</span>,                         <span class="co"># Columns to plot</span></span>
+<span id="cb68-4"><a href="#cb68-4" tabindex="-1"></a>   <span class="fu">aes</span>(<span class="at">color =</span> Drainage_Basin,            <span class="co"># Color by basins</span></span>
+<span id="cb68-5"><a href="#cb68-5" tabindex="-1"></a>       <span class="at">alpha =</span> <span class="fl">0.5</span>),                      <span class="co"># Transparency</span></span>
+<span id="cb68-6"><a href="#cb68-6" tabindex="-1"></a>   <span class="at">upper =</span> <span class="fu">list</span>(<span class="at">continuous =</span> <span class="fu">wrap</span>(<span class="st">&quot;cor&quot;</span>, <span class="at">size =</span> <span class="fl">2.5</span>)), <span class="co"># Font size in the upper panels</span></span>
+<span id="cb68-7"><a href="#cb68-7" tabindex="-1"></a>   <span class="at">lower =</span> <span class="fu">list</span>(<span class="at">continuous =</span> <span class="st">&quot;smooth&quot;</span>)    <span class="co"># Add trend lines to scatter plots</span></span>
+<span id="cb68-8"><a href="#cb68-8" tabindex="-1"></a>   ) </span></code></pre></div>
 <p><img src="r1_files/figure-html/unnamed-chunk-31-1.png" width="90%" style="display: block; margin: auto;" /></p>
 </div>
 </div>

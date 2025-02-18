@@ -11,7 +11,7 @@
 
 <meta name="author" content="Alexandru T. Codilean" />
 
-<meta name="date" content="2025-02-18" />
+<meta name="date" content="2025-02-19" />
 
 <title>Case Study: Koala habitat suitability</title>
 
@@ -482,7 +482,7 @@ div.tocify {
 <h3 class="subtitle">SCII205: Introductory Geospatial Analysis /
 Practical No. 5</h3>
 <h4 class="author">Alexandru T. Codilean</h4>
-<h4 class="date">2025-02-18</h4>
+<h4 class="date">2025-02-19</h4>
 
 </div>
 
@@ -1100,9 +1100,11 @@ buildings.</p>
 <span id="cb26-8"><a href="#cb26-8" tabindex="-1"></a></span>
 <span id="cb26-9"><a href="#cb26-9" tabindex="-1"></a><span class="co"># Plot the three layers on the same map</span></span>
 <span id="cb26-10"><a href="#cb26-10" tabindex="-1"></a></span>
-<span id="cb26-11"><a href="#cb26-11" tabindex="-1"></a>built_map <span class="ot">&lt;-</span> bnd_map <span class="sc">+</span> <span class="fu">tm_shape</span>(built_areas) <span class="sc">+</span> <span class="fu">tm_fill</span>(<span class="st">&quot;lightgray&quot;</span>)</span>
-<span id="cb26-12"><a href="#cb26-12" tabindex="-1"></a>roads_map <span class="ot">&lt;-</span> built_map <span class="sc">+</span> <span class="fu">tm_shape</span>(roads) <span class="sc">+</span> <span class="fu">tm_lines</span>(<span class="at">col =</span> <span class="st">&quot;red&quot;</span>, <span class="at">lwd =</span> <span class="dv">1</span>, <span class="at">lty =</span> <span class="st">&quot;solid&quot;</span>)</span>
-<span id="cb26-13"><a href="#cb26-13" tabindex="-1"></a>roads_map <span class="sc">+</span> <span class="fu">tm_shape</span>(railways) <span class="sc">+</span> <span class="fu">tm_lines</span>(<span class="at">col =</span> <span class="st">&quot;black&quot;</span>, <span class="at">lwd =</span> <span class="dv">2</span>, <span class="at">lty =</span> <span class="st">&quot;solid&quot;</span>)</span></code></pre></div>
+<span id="cb26-11"><a href="#cb26-11" tabindex="-1"></a>built_map <span class="ot">&lt;-</span> bnd_map <span class="sc">+</span> </span>
+<span id="cb26-12"><a href="#cb26-12" tabindex="-1"></a>      <span class="fu">tm_shape</span>(built_areas) <span class="sc">+</span> <span class="fu">tm_fill</span>(<span class="st">&quot;lightgray&quot;</span>)</span>
+<span id="cb26-13"><a href="#cb26-13" tabindex="-1"></a>roads_map <span class="ot">&lt;-</span> built_map <span class="sc">+</span> </span>
+<span id="cb26-14"><a href="#cb26-14" tabindex="-1"></a>      <span class="fu">tm_shape</span>(roads) <span class="sc">+</span> <span class="fu">tm_lines</span>(<span class="at">col =</span> <span class="st">&quot;red&quot;</span>, <span class="at">lwd =</span> <span class="dv">1</span>, <span class="at">lty =</span> <span class="st">&quot;solid&quot;</span>)</span>
+<span id="cb26-15"><a href="#cb26-15" tabindex="-1"></a>roads_map <span class="sc">+</span> <span class="fu">tm_shape</span>(railways) <span class="sc">+</span> <span class="fu">tm_lines</span>(<span class="at">col =</span> <span class="st">&quot;black&quot;</span>, <span class="at">lwd =</span> <span class="dv">2</span>, <span class="at">lty =</span> <span class="st">&quot;solid&quot;</span>)</span></code></pre></div>
 <p><img src="r5_files/figure-html/unnamed-chunk-22-1.png" width="80%" style="display: block; margin: auto;" /></p>
 <p>The <code>roads</code> layer contains all road types, including minor
 roads and tracks, and not all of these will constitute a barrier for
@@ -1135,9 +1137,11 @@ these two classifications:</p>
 <span id="cb31-10"><a href="#cb31-10" tabindex="-1"></a></span>
 <span id="cb31-11"><a href="#cb31-11" tabindex="-1"></a><span class="co"># Plot the three layers on the same map</span></span>
 <span id="cb31-12"><a href="#cb31-12" tabindex="-1"></a></span>
-<span id="cb31-13"><a href="#cb31-13" tabindex="-1"></a>built_map <span class="ot">&lt;-</span> bnd_map <span class="sc">+</span> <span class="fu">tm_shape</span>(built_areas) <span class="sc">+</span> <span class="fu">tm_fill</span>(<span class="st">&quot;lightgray&quot;</span>)</span>
-<span id="cb31-14"><a href="#cb31-14" tabindex="-1"></a>roads_map <span class="ot">&lt;-</span> built_map <span class="sc">+</span> <span class="fu">tm_shape</span>(roads_filtered) <span class="sc">+</span> <span class="fu">tm_lines</span>(<span class="at">col =</span> <span class="st">&quot;red&quot;</span>, <span class="at">lwd =</span> <span class="dv">1</span>, <span class="at">lty =</span> <span class="st">&quot;solid&quot;</span>)</span>
-<span id="cb31-15"><a href="#cb31-15" tabindex="-1"></a>roads_map <span class="sc">+</span> <span class="fu">tm_shape</span>(railways) <span class="sc">+</span> <span class="fu">tm_lines</span>(<span class="at">col =</span> <span class="st">&quot;black&quot;</span>, <span class="at">lwd =</span> <span class="dv">2</span>, <span class="at">lty =</span> <span class="st">&quot;solid&quot;</span>)</span></code></pre></div>
+<span id="cb31-13"><a href="#cb31-13" tabindex="-1"></a>built_map <span class="ot">&lt;-</span> bnd_map <span class="sc">+</span> </span>
+<span id="cb31-14"><a href="#cb31-14" tabindex="-1"></a>  <span class="fu">tm_shape</span>(built_areas) <span class="sc">+</span> <span class="fu">tm_fill</span>(<span class="st">&quot;lightgray&quot;</span>)</span>
+<span id="cb31-15"><a href="#cb31-15" tabindex="-1"></a>roads_map <span class="ot">&lt;-</span> built_map <span class="sc">+</span> </span>
+<span id="cb31-16"><a href="#cb31-16" tabindex="-1"></a>  <span class="fu">tm_shape</span>(roads_filtered) <span class="sc">+</span> <span class="fu">tm_lines</span>(<span class="at">col =</span> <span class="st">&quot;red&quot;</span>, <span class="at">lwd =</span> <span class="dv">1</span>, <span class="at">lty =</span> <span class="st">&quot;solid&quot;</span>)</span>
+<span id="cb31-17"><a href="#cb31-17" tabindex="-1"></a>roads_map <span class="sc">+</span> <span class="fu">tm_shape</span>(railways) <span class="sc">+</span> <span class="fu">tm_lines</span>(<span class="at">col =</span> <span class="st">&quot;black&quot;</span>, <span class="at">lwd =</span> <span class="dv">2</span>, <span class="at">lty =</span> <span class="st">&quot;solid&quot;</span>)</span></code></pre></div>
 <p><img src="r5_files/figure-html/unnamed-chunk-25-1.png" width="672" /></p>
 <p>Next, drop all attribute fields, create a new <code>SCORE</code>
 field for each layer, and populate with the value zero:</p>
@@ -1174,29 +1178,33 @@ field for each layer, and populate with the value zero:</p>
 <span id="cb33-15"><a href="#cb33-15" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">geometry =</span> <span class="fu">st_union</span>(geometry))</span>
 <span id="cb33-16"><a href="#cb33-16" tabindex="-1"></a></span>
 <span id="cb33-17"><a href="#cb33-17" tabindex="-1"></a><span class="co"># Join the three layers together and dissolve again</span></span>
-<span id="cb33-18"><a href="#cb33-18" tabindex="-1"></a><span class="co"># Combine the sf objects using rbind (works if they have identical column names)</span></span>
-<span id="cb33-19"><a href="#cb33-19" tabindex="-1"></a>infrastructure <span class="ot">&lt;-</span> <span class="fu">rbind</span>(built_buffers_dissolved,</span>
-<span id="cb33-20"><a href="#cb33-20" tabindex="-1"></a>                        roads_buffers_dissolved,</span>
-<span id="cb33-21"><a href="#cb33-21" tabindex="-1"></a>                        railways_buffers_dissolved</span>
-<span id="cb33-22"><a href="#cb33-22" tabindex="-1"></a>                        )</span>
-<span id="cb33-23"><a href="#cb33-23" tabindex="-1"></a></span>
-<span id="cb33-24"><a href="#cb33-24" tabindex="-1"></a><span class="co"># Dissolve (union)</span></span>
-<span id="cb33-25"><a href="#cb33-25" tabindex="-1"></a>infrastructure_dissolved <span class="ot">&lt;-</span> <span class="fu">st_union</span>(infrastructure)</span>
-<span id="cb33-26"><a href="#cb33-26" tabindex="-1"></a></span>
-<span id="cb33-27"><a href="#cb33-27" tabindex="-1"></a><span class="co"># Convert the unioned geometry back into an sf object</span></span>
-<span id="cb33-28"><a href="#cb33-28" tabindex="-1"></a>infrastructure_sf <span class="ot">&lt;-</span> <span class="fu">st_sf</span>(<span class="at">geometry =</span> infrastructure_dissolved)</span>
-<span id="cb33-29"><a href="#cb33-29" tabindex="-1"></a></span>
-<span id="cb33-30"><a href="#cb33-30" tabindex="-1"></a><span class="co"># Add SCORE field and sort attribute columns</span></span>
-<span id="cb33-31"><a href="#cb33-31" tabindex="-1"></a>infrastructure_sf<span class="sc">$</span>SCORE <span class="ot">&lt;-</span> <span class="dv">0</span></span>
-<span id="cb33-32"><a href="#cb33-32" tabindex="-1"></a>infrastructure_sf <span class="ot">&lt;-</span> infrastructure_sf[, <span class="fu">c</span>(<span class="st">&quot;SCORE&quot;</span>, <span class="st">&quot;geometry&quot;</span>)]</span>
-<span id="cb33-33"><a href="#cb33-33" tabindex="-1"></a></span>
-<span id="cb33-34"><a href="#cb33-34" tabindex="-1"></a><span class="co"># Plot bnd</span></span>
-<span id="cb33-35"><a href="#cb33-35" tabindex="-1"></a>bnd_map <span class="ot">&lt;-</span> <span class="fu">tm_shape</span>(hunter_bnd) <span class="sc">+</span>  <span class="fu">tm_borders</span>(<span class="st">&quot;black&quot;</span>) <span class="sc">+</span> <span class="fu">tm_layout</span>(<span class="at">frame =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb33-36"><a href="#cb33-36" tabindex="-1"></a></span>
-<span id="cb33-37"><a href="#cb33-37" tabindex="-1"></a><span class="co"># Add infrastructure</span></span>
-<span id="cb33-38"><a href="#cb33-38" tabindex="-1"></a>bnd_map <span class="sc">+</span> <span class="fu">tm_shape</span>(infrastructure_sf) <span class="sc">+</span> </span>
-<span id="cb33-39"><a href="#cb33-39" tabindex="-1"></a>        <span class="fu">tm_fill</span>(<span class="st">&quot;gray&quot;</span>) <span class="sc">+</span> </span>
-<span id="cb33-40"><a href="#cb33-40" tabindex="-1"></a>        <span class="fu">tm_layout</span>(<span class="at">frame =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+<span id="cb33-18"><a href="#cb33-18" tabindex="-1"></a><span class="co"># Combine the sf objects using rbind </span></span>
+<span id="cb33-19"><a href="#cb33-19" tabindex="-1"></a><span class="co"># (works if they have identical column names)</span></span>
+<span id="cb33-20"><a href="#cb33-20" tabindex="-1"></a>infrastructure <span class="ot">&lt;-</span> </span>
+<span id="cb33-21"><a href="#cb33-21" tabindex="-1"></a>    <span class="fu">rbind</span>(built_buffers_dissolved,</span>
+<span id="cb33-22"><a href="#cb33-22" tabindex="-1"></a>          roads_buffers_dissolved,</span>
+<span id="cb33-23"><a href="#cb33-23" tabindex="-1"></a>          railways_buffers_dissolved</span>
+<span id="cb33-24"><a href="#cb33-24" tabindex="-1"></a>          )</span>
+<span id="cb33-25"><a href="#cb33-25" tabindex="-1"></a></span>
+<span id="cb33-26"><a href="#cb33-26" tabindex="-1"></a><span class="co"># Dissolve (union)</span></span>
+<span id="cb33-27"><a href="#cb33-27" tabindex="-1"></a>infrastructure_dissolved <span class="ot">&lt;-</span> <span class="fu">st_union</span>(infrastructure)</span>
+<span id="cb33-28"><a href="#cb33-28" tabindex="-1"></a></span>
+<span id="cb33-29"><a href="#cb33-29" tabindex="-1"></a><span class="co"># Convert the unioned geometry back into an sf object</span></span>
+<span id="cb33-30"><a href="#cb33-30" tabindex="-1"></a>infrastructure_sf <span class="ot">&lt;-</span> <span class="fu">st_sf</span>(<span class="at">geometry =</span> infrastructure_dissolved)</span>
+<span id="cb33-31"><a href="#cb33-31" tabindex="-1"></a></span>
+<span id="cb33-32"><a href="#cb33-32" tabindex="-1"></a><span class="co"># Add SCORE field and sort attribute columns</span></span>
+<span id="cb33-33"><a href="#cb33-33" tabindex="-1"></a>infrastructure_sf<span class="sc">$</span>SCORE <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb33-34"><a href="#cb33-34" tabindex="-1"></a>infrastructure_sf <span class="ot">&lt;-</span> infrastructure_sf[, <span class="fu">c</span>(<span class="st">&quot;SCORE&quot;</span>, <span class="st">&quot;geometry&quot;</span>)]</span>
+<span id="cb33-35"><a href="#cb33-35" tabindex="-1"></a></span>
+<span id="cb33-36"><a href="#cb33-36" tabindex="-1"></a><span class="co"># Plot bnd</span></span>
+<span id="cb33-37"><a href="#cb33-37" tabindex="-1"></a>bnd_map <span class="ot">&lt;-</span> <span class="fu">tm_shape</span>(hunter_bnd) <span class="sc">+</span> </span>
+<span id="cb33-38"><a href="#cb33-38" tabindex="-1"></a>            <span class="fu">tm_borders</span>(<span class="st">&quot;black&quot;</span>) <span class="sc">+</span> </span>
+<span id="cb33-39"><a href="#cb33-39" tabindex="-1"></a>            <span class="fu">tm_layout</span>(<span class="at">frame =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb33-40"><a href="#cb33-40" tabindex="-1"></a></span>
+<span id="cb33-41"><a href="#cb33-41" tabindex="-1"></a><span class="co"># Add infrastructure</span></span>
+<span id="cb33-42"><a href="#cb33-42" tabindex="-1"></a>bnd_map <span class="sc">+</span> <span class="fu">tm_shape</span>(infrastructure_sf) <span class="sc">+</span> </span>
+<span id="cb33-43"><a href="#cb33-43" tabindex="-1"></a>            <span class="fu">tm_fill</span>(<span class="st">&quot;gray&quot;</span>) <span class="sc">+</span> </span>
+<span id="cb33-44"><a href="#cb33-44" tabindex="-1"></a>            <span class="fu">tm_layout</span>(<span class="at">frame =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
 <p><img src="r5_files/figure-html/unnamed-chunk-27-1.png" width="80%" style="display: block; margin: auto;" /></p>
 <p>We are now ready to convert the infrastructure buffer layer
 (<code>infrastructure_dissolved</code>) to a raster with scores:</p>
@@ -1286,16 +1294,18 @@ algebra is straight forward:</p>
 <span id="cb36-22"><a href="#cb36-22" tabindex="-1"></a><span class="co"># Add khv</span></span>
 <span id="cb36-23"><a href="#cb36-23" tabindex="-1"></a>khv_map <span class="sc">+</span> <span class="fu">tm_shape</span>(koala_habitat) <span class="sc">+</span> </span>
 <span id="cb36-24"><a href="#cb36-24" tabindex="-1"></a>    <span class="fu">tm_raster</span>(<span class="st">&quot;khv&quot;</span>, </span>
-<span id="cb36-25"><a href="#cb36-25" tabindex="-1"></a>            <span class="at">col.scale =</span> <span class="fu">tm_scale_continuous_sqrt</span>(</span>
-<span id="cb36-26"><a href="#cb36-26" tabindex="-1"></a>              <span class="at">values =</span> <span class="st">&quot;viridis&quot;</span>, </span>
+<span id="cb36-25"><a href="#cb36-25" tabindex="-1"></a>          <span class="at">col.scale =</span> <span class="fu">tm_scale_continuous_sqrt</span>(</span>
+<span id="cb36-26"><a href="#cb36-26" tabindex="-1"></a>            <span class="at">values =</span> <span class="st">&quot;viridis&quot;</span>, </span>
 <span id="cb36-27"><a href="#cb36-27" tabindex="-1"></a>              ), </span>
-<span id="cb36-28"><a href="#cb36-28" tabindex="-1"></a>            <span class="at">col.legend =</span> <span class="fu">tm_legend</span>(</span>
-<span id="cb36-29"><a href="#cb36-29" tabindex="-1"></a>              <span class="at">title =</span> <span class="st">&quot;Habitat </span><span class="sc">\n</span><span class="st">Suitability </span><span class="sc">\n</span><span class="st">Index&quot;</span>,</span>
-<span id="cb36-30"><a href="#cb36-30" tabindex="-1"></a>              <span class="at">position =</span> <span class="fu">tm_pos_out</span>(<span class="at">cell.h =</span> <span class="st">&quot;right&quot;</span>, <span class="at">cell.v =</span> <span class="st">&quot;center&quot;</span>),</span>
-<span id="cb36-31"><a href="#cb36-31" tabindex="-1"></a>              <span class="at">orientation =</span> <span class="st">&quot;portrait&quot;</span></span>
+<span id="cb36-28"><a href="#cb36-28" tabindex="-1"></a>          <span class="at">col.legend =</span> <span class="fu">tm_legend</span>(</span>
+<span id="cb36-29"><a href="#cb36-29" tabindex="-1"></a>            <span class="at">title =</span> <span class="st">&quot;Habitat </span><span class="sc">\n</span><span class="st">Suitability </span><span class="sc">\n</span><span class="st">Index&quot;</span>,</span>
+<span id="cb36-30"><a href="#cb36-30" tabindex="-1"></a>            <span class="at">position =</span> <span class="fu">tm_pos_out</span>(<span class="at">cell.h =</span> <span class="st">&quot;right&quot;</span>, <span class="at">cell.v =</span> <span class="st">&quot;center&quot;</span>),</span>
+<span id="cb36-31"><a href="#cb36-31" tabindex="-1"></a>            <span class="at">orientation =</span> <span class="st">&quot;portrait&quot;</span></span>
 <span id="cb36-32"><a href="#cb36-32" tabindex="-1"></a>              )</span>
 <span id="cb36-33"><a href="#cb36-33" tabindex="-1"></a>    ) <span class="sc">+</span></span>
-<span id="cb36-34"><a href="#cb36-34" tabindex="-1"></a>    <span class="fu">tm_layout</span>(<span class="at">frame =</span> <span class="cn">FALSE</span>, <span class="at">legend.text.size =</span> <span class="fl">0.6</span>, <span class="at">legend.title.size =</span> <span class="fl">0.6</span>) </span></code></pre></div>
+<span id="cb36-34"><a href="#cb36-34" tabindex="-1"></a>    <span class="fu">tm_layout</span>(<span class="at">frame =</span> <span class="cn">FALSE</span>, </span>
+<span id="cb36-35"><a href="#cb36-35" tabindex="-1"></a>              <span class="at">legend.text.size =</span> <span class="fl">0.6</span>, </span>
+<span id="cb36-36"><a href="#cb36-36" tabindex="-1"></a>              <span class="at">legend.title.size =</span> <span class="fl">0.6</span>) </span></code></pre></div>
 <pre><code>## SpatRaster object downsampled to 3018 by 3314 cells.</code></pre>
 <p><img src="r5_files/figure-html/unnamed-chunk-29-1.png" width="80%" style="display: block; margin: auto;" /></p>
 <p>To calculate the normalised <span class="math inline">\(khv\)</span>,
@@ -1334,7 +1344,9 @@ we divide all grid cells of the <code>koala_habitat</code> raster with
 <span id="cb41-15"><a href="#cb41-15" tabindex="-1"></a>            <span class="at">orientation =</span> <span class="st">&quot;portrait&quot;</span></span>
 <span id="cb41-16"><a href="#cb41-16" tabindex="-1"></a>            )</span>
 <span id="cb41-17"><a href="#cb41-17" tabindex="-1"></a>       )<span class="sc">+</span></span>
-<span id="cb41-18"><a href="#cb41-18" tabindex="-1"></a>       <span class="fu">tm_layout</span>(<span class="at">frame =</span> <span class="cn">FALSE</span>, <span class="at">legend.text.size =</span> <span class="fl">0.6</span>, <span class="at">legend.title.size =</span> <span class="fl">0.6</span>)</span></code></pre></div>
+<span id="cb41-18"><a href="#cb41-18" tabindex="-1"></a>       <span class="fu">tm_layout</span>(<span class="at">frame =</span> <span class="cn">FALSE</span>, </span>
+<span id="cb41-19"><a href="#cb41-19" tabindex="-1"></a>                 <span class="at">legend.text.size =</span> <span class="fl">0.6</span>, </span>
+<span id="cb41-20"><a href="#cb41-20" tabindex="-1"></a>                 <span class="at">legend.title.size =</span> <span class="fl">0.6</span>)</span></code></pre></div>
 <pre><code>## SpatRaster object downsampled to 3018 by 3314 cells.</code></pre>
 <p><img src="r5_files/figure-html/unnamed-chunk-32-1.png" width="80%" style="display: block; margin: auto;" /></p>
 </div>
