@@ -9,9 +9,11 @@
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
+<meta name="author" content="Alexandru T. Codilean" />
 
+<meta name="date" content="2025-03-14" />
 
-<title>Practical …</title>
+<title>Mapping COVID spread and mortality</title>
 
 <script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -29,6 +31,9 @@
        h6 {font-size: 12px;}
        code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
        pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet" />
 <script src="site_libs/pagedtable-1.1/js/pagedtable.js"></script>
@@ -46,6 +51,107 @@
 
 
 
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  background-color: #f8f8f8; }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ef2929; } /* Alert */
+code span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #204a87; } /* Attribute */
+code span.bn { color: #0000cf; } /* BaseN */
+code span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4e9a06; } /* Char */
+code span.cn { color: #8f5902; } /* Constant */
+code span.co { color: #8f5902; font-style: italic; } /* Comment */
+code span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+code span.dt { color: #204a87; } /* DataType */
+code span.dv { color: #0000cf; } /* DecVal */
+code span.er { color: #a40000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #0000cf; } /* Float */
+code span.fu { color: #204a87; font-weight: bold; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+code span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+code span.ot { color: #8f5902; } /* Other */
+code span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+code span.sc { color: #ce5c00; font-weight: bold; } /* SpecialChar */
+code span.ss { color: #4e9a06; } /* SpecialString */
+code span.st { color: #4e9a06; } /* String */
+code span.va { color: #000000; } /* Variable */
+code span.vs { color: #4e9a06; } /* VerbatimString */
+code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
 
 
 
@@ -211,6 +317,75 @@ $(document).ready(function () {
 
 
 
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+.tocify-subheader {
+  display: inline;
+}
+.tocify-subheader .tocify-item {
+  font-size: 0.95em;
+}
+
+</style>
+
+
 
 </head>
 
@@ -218,6 +393,16 @@ $(document).ready(function () {
 
 
 <div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
 
 
 
@@ -315,15 +500,1078 @@ $(document).ready(function () {
 
 
 
-<h1 class="title toc-ignore">Practical …</h1>
+<h1 class="title toc-ignore">Mapping COVID spread and mortality</h1>
+<h3 class="subtitle">SCII205: Introductory Geospatial Analysis /
+Practical No. 5</h3>
+<h4 class="author">Alexandru T. Codilean</h4>
+<h4 class="date">2025-03-14</h4>
 
 </div>
 
 
-<p>Coming soon…</p>
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<p>In this practical we use R to produce a series of maps depicting the
+spatial distribution of COVID-19 cases and fatalities using data
+obtained from the <a href="https://www.who.int">World Health
+Organisation (WHO)</a>.</p>
+<p>The WHO gathered COVID-19 data from official sources and health
+ministry websites until March 2020, then switched to using regional
+dashboards and aggregated data from 22 March 2020 onwards. The figures,
+mainly from lab-confirmed cases, are updated weekly based on the
+reporting date, and may vary due to local differences in testing and
+reporting practices.</p>
+<p><font size="3"><svg viewBox="0 0 512 512" style="height:1em;position:relative;display:inline-block;top:.1em;" xmlns="http://www.w3.org/2000/svg">
+<path d="M436.67,184.11a27.17,27.17,0,0,1-38.3,0l-22.48-22.49a27.15,27.15,0,0,1,0-38.29l50.89-50.89a.85.85,0,0,0-.26-1.38C393.68,57,351.09,64.15,324.05,91c-25.88,25.69-27.35,64.27-17.87,98a27,27,0,0,1-7.67,27.14l-173,160.76a40.76,40.76,0,1,0,57.57,57.54l162.15-173.3A27,27,0,0,1,372,253.44c33.46,8.94,71.49,7.26,97.07-17.94,27.49-27.08,33.42-74.94,20.1-102.33a.85.85,0,0,0-1.36-.22Z" style="fill:none;stroke:#000;stroke-linecap:round;stroke-miterlimit:10;stroke-width:32px"></path>
+<path d="M224,284c-17.48-17-25.49-24.91-31-30.29a18.24,18.24,0,0,1-3.33-21.35,20.76,20.76,0,0,1,3.5-4.62l15.68-15.29a18.66,18.66,0,0,1,5.63-3.87,18.11,18.11,0,0,1,20,3.62c5.45,5.29,15.43,15,33.41,32.52" style="fill:none;stroke:#000;stroke-linecap:round;stroke-linejoin:round;stroke-width:32px"></path>
+<path d="M317.07,291.3c40.95,38.1,90.62,83.27,110,99.41a13.46,13.46,0,0,1,.94,19.92L394.63,444a14,14,0,0,1-20.29-.76c-16.53-19.18-61.09-67.11-99.27-107" style="fill:none;stroke:#000;stroke-linecap:round;stroke-linejoin:round;stroke-width:32px"></path>
+<path d="M17.34,193.5l29.41-28.74a4.71,4.71,0,0,1,3.41-1.35,4.85,4.85,0,0,1,3.41,1.35h0a9.86,9.86,0,0,0,8.19,2.77c3.83-.42,7.92-1.6,10.57-4.12,6-5.8-.94-17.23,4.34-24.54a207,207,0,0,1,19.78-22.6c6-5.88,29.84-28.32,69.9-44.45A107.31,107.31,0,0,1,206.67,64c22.59,0,40,10,46.26,15.67a89.54,89.54,0,0,1,10.28,11.64A78.92,78.92,0,0,0,254,88.54,68.82,68.82,0,0,0,234,87.28c-13.33,1.09-29.41,7.26-38,14-13.9,11-19.87,25.72-20.81,44.71-.68,14.12,2.72,22.1,36.1,55.49a6.6,6.6,0,0,1-.34,9.16l-18.22,18a6.88,6.88,0,0,1-9.54.09c-21.94-21.94-36.65-33.09-45-38.16s-15.07-6.5-18.3-6.85a30.85,30.85,0,0,0-18.27,3.87,11.39,11.39,0,0,0-2.64,2,14.14,14.14,0,0,0,.42,20.08l1.71,1.6a4.63,4.63,0,0,1,0,6.64L71.73,246.6A4.71,4.71,0,0,1,68.32,248a4.86,4.86,0,0,1-3.41-1.35L17.34,200.22A4.88,4.88,0,0,1,17.34,193.5Z" style="fill:none;stroke:#000;stroke-linecap:round;stroke-linejoin:round;stroke-width:32px"></path></svg>
+<strong>R packages</strong></font></p>
+<p>In this practical session, we will primarily utilise a range of R
+functions drawn from the following packages:</p>
+<ol style="list-style-type: decimal">
+<li><p>The <strong>tidyverse</strong>: is a collection of R packages
+designed for data science, providing a cohesive set of tools for data
+manipulation, visualization, and analysis. It includes core packages
+such as <strong>ggplot2</strong> for visualization,
+<strong>dplyr</strong> for data manipulation, <strong>tidyr</strong> for
+data tidying, and <strong>readr</strong> for data import, all following
+a consistent and intuitive syntax.</p></li>
+<li><p>The <strong>sf</strong> package: provides a standardised
+framework for handling spatial vector data in R based on the simple
+features standard (OGC). It enables users to easily work with points,
+lines, and polygons by integrating robust geospatial libraries such as
+GDAL, GEOS, and PROJ.</p></li>
+<li><p>The <strong>tmap</strong> package: provides a flexible and
+powerful system for creating thematic maps in R, drawing on a layered
+grammar of graphics approach similar to that of
+<strong>ggplot2</strong>. It supports both static and interactive map
+visualizations, making it easy to tailor maps to various presentation
+and analysis needs.</p></li>
+</ol>
+<p><font size="3"><svg viewBox="0 0 512 512" style="height:1em;position:relative;display:inline-block;top:.1em;" xmlns="http://www.w3.org/2000/svg">
+<path d="M256,160c16-63.16,76.43-95.41,208-96a15.94,15.94,0,0,1,16,16V368a16,16,0,0,1-16,16c-128,0-177.45,25.81-208,64-30.37-38-80-64-208-64-9.88,0-16-8.05-16-17.93V80A15.94,15.94,0,0,1,48,64C179.57,64.59,240,96.84,256,160Z" style="fill:none;stroke:#000;stroke-linecap:round;stroke-linejoin:round;stroke-width:32px"></path>
+<line x1="256" y1="160" x2="256" y2="448" style="fill:none;stroke:#000;stroke-linecap:round;stroke-linejoin:round;stroke-width:32px"></line></svg>
+<strong>Resources</strong></font></p>
+<ul>
+<li>The <em>Geocomputation with R</em> <a
+href="https://r.geocompx.org">book</a>.</li>
+<li>The <strong>tidyverse</strong> library of packages <a
+href="https://www.tidyverse.org/learn/">documentation</a>.</li>
+<li>The <strong>sf</strong> package <a
+href="https://r-spatial.github.io/sf/">documentation</a>.</li>
+<li>The <strong>tmap</strong> package <a
+href="https://r-tmap.github.io">documentation</a>.</li>
+</ul>
+</div>
+<div id="install-and-load-packages" class="section level1">
+<h1>Install and load packages</h1>
+<p>All necessary packages should be installed already, but just in
+case:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="co"># Main spatial packages</span></span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;sf&quot;</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="co"># tmap dev version</span></span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;tmap&quot;</span>, <span class="at">repos =</span> <span class="fu">c</span>(<span class="st">&quot;https://r-tmap.r-universe.dev&quot;</span>,</span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a>                                   <span class="st">&quot;https://cloud.r-project.org&quot;</span>))</span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a><span class="co"># leaflet for dynamic maps</span></span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;leaflet&quot;</span></span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a><span class="co"># tidyverse for data wrangling</span></span>
+<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;tidyverse&quot;</span>)</span></code></pre></div>
+<p>Load packages:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">library</span>(sf)</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="fu">library</span>(tmap)</span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a><span class="fu">library</span>(leaflet)</span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a><span class="co"># Set tmap to static maps</span></span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a><span class="fu">tmap_mode</span>(<span class="st">&quot;plot&quot;</span>)</span></code></pre></div>
+</div>
+<div id="provided-datasets" class="section level1">
+<h1>Provided datasets</h1>
+<p>The following datasets are provided for this practical:</p>
+<p><strong>Tabular data</strong></p>
+<ul>
+<li><code>WHO-COVID-19-global-data.csv</code>: A comma-separated text
+file containing weekly data on COVID-19 cases and deaths, organised by
+the reporting dates to the WHO. The data is updated continuously
+(although some countries have stopped reporting new cases) and is
+available to download from <a
+href="https://data.who.int/dashboards/covid19/data">here</a>.</li>
+</ul>
+<p><strong>Vector data</strong></p>
+<ul>
+<li><p><code>ne_110m_admin_0_countries</code>: POLYGON geometry ESRI
+Shapefile containing boundaries of the countries of the world. The data
+is part of the Natural Earth public dataset available at <a
+href="https://www.naturalearthdata.com/downloads/110m-cultural-vectors/">1:110
+million scale</a>.</p></li>
+<li><p><code>ne_110m_wgs84_bounding_box</code>: POLYGON geometry ESRI
+Shapefile containing the bounding box of the <code>ne_110</code> layers.
+The data is part of the Natural Earth public dataset available at <a
+href="https://www.naturalearthdata.com/downloads/110m-physical-vectors/">1:110
+million scale</a>.</p></li>
+</ul>
+</div>
+<div id="load-and-explore-who-data" class="section level1">
+<h1>Load and explore WHO data</h1>
+<p>The following block of R code loads the COVID-19 data downloaded from
+the WHO:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="co"># Path to WHO file; modify as needed</span></span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>who_file <span class="ot">&lt;-</span> <span class="st">&quot;./data/data_covid/WHO-COVID-19-global-data.csv&quot;</span></span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a><span class="co"># Load data and replace missing values with NA</span></span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a><span class="co"># Here we use read_csv() from readr (tydiverse)</span></span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>covid_data <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(who_file, <span class="at">na =</span> <span class="fu">c</span>(<span class="st">&quot;&quot;</span>, <span class="st">&quot;NA&quot;</span>))</span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a></span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a><span class="co"># Inspect the data</span></span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a><span class="fu">head</span>(covid_data)</span></code></pre></div>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["Date_reported"],"name":[1],"type":["date"],"align":["right"]},{"label":["Country_code"],"name":[2],"type":["chr"],"align":["left"]},{"label":["Country"],"name":[3],"type":["chr"],"align":["left"]},{"label":["WHO_region"],"name":[4],"type":["chr"],"align":["left"]},{"label":["New_cases"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["Cumulative_cases"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["New_deaths"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["Cumulative_deaths"],"name":[8],"type":["dbl"],"align":["right"]}],"data":[{"1":"2020-01-05","2":"AF","3":"Afghanistan","4":"EMRO","5":"NA","6":"0","7":"NA","8":"0"},{"1":"2020-01-12","2":"AF","3":"Afghanistan","4":"EMRO","5":"NA","6":"0","7":"NA","8":"0"},{"1":"2020-01-19","2":"AF","3":"Afghanistan","4":"EMRO","5":"NA","6":"0","7":"NA","8":"0"},{"1":"2020-01-26","2":"AF","3":"Afghanistan","4":"EMRO","5":"NA","6":"0","7":"NA","8":"0"},{"1":"2020-02-02","2":"AF","3":"Afghanistan","4":"EMRO","5":"NA","6":"0","7":"NA","8":"0"},{"1":"2020-02-09","2":"AF","3":"Afghanistan","4":"EMRO","5":"NA","6":"0","7":"NA","8":"0"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<p>The file contains eight columns, including data for new and
+cumulative COVID-19 cases and COVID-19 related deaths. The next block of
+code prints the maximum and minimum values for the
+<strong>Date_reported</strong> column:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="co"># This code pipes (%&gt;%) the data frame into the summarise() function,</span></span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a><span class="co"># which then calculates the minimum and maximum values while ignoring</span></span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a><span class="co"># any missing values (thanks to na.rm = TRUE).</span></span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>covid_data <span class="sc">%&gt;%</span></span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a>    <span class="at">min_value =</span> <span class="fu">min</span>(Date_reported, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a>    <span class="at">max_value =</span> <span class="fu">max</span>(Date_reported, <span class="at">na.rm =</span> <span class="cn">TRUE</span>) </span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a>  )</span></code></pre></div>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["min_value"],"name":[1],"type":["date"],"align":["right"]},{"label":["max_value"],"name":[2],"type":["date"],"align":["right"]}],"data":[{"1":"2020-01-05","2":"2025-02-23"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<p>As shown above, the earliest reported cases and deaths date back to
+05 January 2020, while the most recent entries are from 23 February 2025
+— the date on which the data was downloaded for this practical.</p>
+<p>To prepare the data for analysis, we will undertake several data
+wrangling tasks, specifically:</p>
+<ul>
+<li>extract month and year from the <strong>Date_reported</strong>
+column and store these in new columns;</li>
+<li>remove all data reported after 31 December 2024 to ensure that only
+complete years are analysed and mapped;</li>
+<li>drop the <strong>WHO_region</strong> column, as this will be
+replaced with columns from the <code>ne_110m_admin_0_countries</code>
+layer.</li>
+</ul>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="co"># Prepare WHO file for analysis and plotting</span></span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>covid_data_cleaned <span class="ot">&lt;-</span> covid_data <span class="sc">%&gt;%</span></span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>  </span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>  <span class="co"># Convert date column to Date format</span></span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>  <span class="co"># This column should already be in the right format, but we do this just in case</span></span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Date_reported =</span> <span class="fu">as.Date</span>(Date_reported, <span class="at">format =</span> <span class="st">&quot;%d/%m/%Y&quot;</span>),  </span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a>         <span class="at">Month =</span> <span class="fu">format</span>(Date_reported, <span class="st">&quot;%m&quot;</span>),       <span class="co"># Extract month as a two-digit string</span></span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a>         <span class="at">Year  =</span> <span class="fu">format</span>(Date_reported, <span class="st">&quot;%Y&quot;</span>),       <span class="co"># Extract year as a four-digit string</span></span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a>  </span>
+<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a>  <span class="co"># Keep rows within the specified date range</span></span>
+<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a>  <span class="fu">filter</span>(Date_reported <span class="sc">&gt;=</span> <span class="fu">as.Date</span>(<span class="st">&quot;2020-01-05&quot;</span>) <span class="sc">&amp;</span> Date_reported <span class="sc">&lt;=</span> <span class="fu">as.Date</span>(<span class="st">&quot;2024-12-31&quot;</span>)) <span class="sc">%&gt;%</span>  </span>
+<span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a>  </span>
+<span id="cb5-14"><a href="#cb5-14" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>WHO_region)   <span class="sc">%&gt;%</span>                         <span class="co"># Drop the &#39;WHO_Region&#39; column</span></span>
+<span id="cb5-15"><a href="#cb5-15" tabindex="-1"></a>  <span class="fu">select</span>(Date_reported, Month, Year, <span class="fu">everything</span>())  <span class="co"># Move &#39;month&#39; and &#39;year&#39; to the start</span></span>
+<span id="cb5-16"><a href="#cb5-16" tabindex="-1"></a></span>
+<span id="cb5-17"><a href="#cb5-17" tabindex="-1"></a><span class="co"># Display the first few rows to verify the changes</span></span>
+<span id="cb5-18"><a href="#cb5-18" tabindex="-1"></a><span class="fu">head</span>(covid_data_cleaned)</span></code></pre></div>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["Date_reported"],"name":[1],"type":["date"],"align":["right"]},{"label":["Month"],"name":[2],"type":["chr"],"align":["left"]},{"label":["Year"],"name":[3],"type":["chr"],"align":["left"]},{"label":["Country_code"],"name":[4],"type":["chr"],"align":["left"]},{"label":["Country"],"name":[5],"type":["chr"],"align":["left"]},{"label":["New_cases"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["Cumulative_cases"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["New_deaths"],"name":[8],"type":["dbl"],"align":["right"]},{"label":["Cumulative_deaths"],"name":[9],"type":["dbl"],"align":["right"]}],"data":[{"1":"2020-01-05","2":"01","3":"2020","4":"AF","5":"Afghanistan","6":"NA","7":"0","8":"NA","9":"0"},{"1":"2020-01-12","2":"01","3":"2020","4":"AF","5":"Afghanistan","6":"NA","7":"0","8":"NA","9":"0"},{"1":"2020-01-19","2":"01","3":"2020","4":"AF","5":"Afghanistan","6":"NA","7":"0","8":"NA","9":"0"},{"1":"2020-01-26","2":"01","3":"2020","4":"AF","5":"Afghanistan","6":"NA","7":"0","8":"NA","9":"0"},{"1":"2020-02-02","2":"02","3":"2020","4":"AF","5":"Afghanistan","6":"NA","7":"0","8":"NA","9":"0"},{"1":"2020-02-09","2":"02","3":"2020","4":"AF","5":"Afghanistan","6":"NA","7":"0","8":"NA","9":"0"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<p>The data is now ready for further analysis. To explore it, we plot
+COVID-19 cases and deaths over time for a subset of countries, which are
+identified by their two-digit <a
+href="https://www.iso.org/obp/ui/#search">country codes</a>.</p>
+<p>We plot data for the following countries:</p>
+<ul>
+<li>Australia (<strong>AU</strong>)</li>
+<li>New Zealand (<strong>NZ</strong>)</li>
+<li>United States of America (<strong>US</strong>)</li>
+<li>Canada (<strong>CA</strong>)</li>
+<li>United Kingdom (<strong>GB</strong>)</li>
+<li>Japan (<strong>JP</strong>)</li>
+<li>China (<strong>CN</strong>)</li>
+<li>India (<strong>IN</strong>)</li>
+</ul>
+<p>Create plots of cumulative and new cases:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="co"># Define a vector of country codes for the countries of interest.</span></span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>selected_groups <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;AU&quot;</span>, <span class="st">&quot;NZ&quot;</span>, <span class="st">&quot;US&quot;</span>, <span class="st">&quot;CA&quot;</span>, <span class="st">&quot;GB&quot;</span>, <span class="st">&quot;JP&quot;</span>, <span class="st">&quot;CN&quot;</span>, <span class="st">&quot;IN&quot;</span>)</span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a><span class="co"># Filter the original COVID-19 dataset to include only rows where the Country_code </span></span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a><span class="co"># is one of the selected groups. This uses the pipe operator (%&gt;%) from the dplyr package</span></span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a><span class="co"># and the %in% operator to check for membership</span></span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a>df_filtered <span class="ot">&lt;-</span> covid_data_cleaned <span class="sc">%&gt;%</span> </span>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a>  <span class="fu">filter</span>(Country_code <span class="sc">%in%</span> selected_groups)</span>
+<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a></span>
+<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a><span class="co"># Create a plot of cumulative cases</span></span>
+<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a><span class="co"># Initialise the ggplot using the filtered dataframe. </span></span>
+<span id="cb6-12"><a href="#cb6-12" tabindex="-1"></a><span class="co"># - x-axis: Date_reported (date when the data was reported)</span></span>
+<span id="cb6-13"><a href="#cb6-13" tabindex="-1"></a><span class="co"># - y-axis: Cumulative_cases (total cases up to that date)</span></span>
+<span id="cb6-14"><a href="#cb6-14" tabindex="-1"></a><span class="co"># - colour: differentiates the lines by Country_code</span></span>
+<span id="cb6-15"><a href="#cb6-15" tabindex="-1"></a><span class="fu">ggplot</span>(df_filtered, </span>
+<span id="cb6-16"><a href="#cb6-16" tabindex="-1"></a>       <span class="fu">aes</span>(<span class="at">x =</span> Date_reported, <span class="at">y =</span> Cumulative_cases, <span class="at">colour =</span> Country_code)) <span class="sc">+</span></span>
+<span id="cb6-17"><a href="#cb6-17" tabindex="-1"></a>  <span class="co"># Add a line geometry to plot trends over time.</span></span>
+<span id="cb6-18"><a href="#cb6-18" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb6-19"><a href="#cb6-19" tabindex="-1"></a>  <span class="co"># Use facet_wrap to create separate panels for each country code,</span></span>
+<span id="cb6-20"><a href="#cb6-20" tabindex="-1"></a>  <span class="co"># with 3 panels (facets) per row</span></span>
+<span id="cb6-21"><a href="#cb6-21" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> Country_code, <span class="at">ncol =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb6-22"><a href="#cb6-22" tabindex="-1"></a>  </span>
+<span id="cb6-23"><a href="#cb6-23" tabindex="-1"></a>  <span class="co"># Customise the x-axis:</span></span>
+<span id="cb6-24"><a href="#cb6-24" tabindex="-1"></a>  <span class="co"># - Set specific date breaks (1st January of each year from 2020 to 2025)</span></span>
+<span id="cb6-25"><a href="#cb6-25" tabindex="-1"></a>  <span class="co"># - Label these breaks with the corresponding year.</span></span>
+<span id="cb6-26"><a href="#cb6-26" tabindex="-1"></a>  <span class="fu">scale_x_date</span>(</span>
+<span id="cb6-27"><a href="#cb6-27" tabindex="-1"></a>    <span class="at">breaks =</span> <span class="fu">as.Date</span>(<span class="fu">c</span>(<span class="st">&quot;2020-01-01&quot;</span>, <span class="st">&quot;2021-01-01&quot;</span>, <span class="st">&quot;2022-01-01&quot;</span>, </span>
+<span id="cb6-28"><a href="#cb6-28" tabindex="-1"></a>                       <span class="st">&quot;2023-01-01&quot;</span>, <span class="st">&quot;2024-01-01&quot;</span>, <span class="st">&quot;2025-01-01&quot;</span>)),</span>
+<span id="cb6-29"><a href="#cb6-29" tabindex="-1"></a>    <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">&quot;2020&quot;</span>, <span class="st">&quot;2021&quot;</span>, <span class="st">&quot;2022&quot;</span>, <span class="st">&quot;2023&quot;</span>, <span class="st">&quot;2024&quot;</span>, <span class="st">&quot;2025&quot;</span>)</span>
+<span id="cb6-30"><a href="#cb6-30" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb6-31"><a href="#cb6-31" tabindex="-1"></a>  <span class="co"># Transform the y-axis to a logarithmic scale, which can help visualise exponential growth</span></span>
+<span id="cb6-32"><a href="#cb6-32" tabindex="-1"></a>  <span class="fu">scale_y_log10</span>() <span class="sc">+</span>       </span>
+<span id="cb6-33"><a href="#cb6-33" tabindex="-1"></a> </span>
+<span id="cb6-34"><a href="#cb6-34" tabindex="-1"></a>  <span class="co"># Titles and labels</span></span>
+<span id="cb6-35"><a href="#cb6-35" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&quot;Cumulative COVID-19 cases&quot;</span>,</span>
+<span id="cb6-36"><a href="#cb6-36" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">&quot;Date&quot;</span>,</span>
+<span id="cb6-37"><a href="#cb6-37" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">&quot;Cumulative cases&quot;</span>,</span>
+<span id="cb6-38"><a href="#cb6-38" tabindex="-1"></a>       <span class="at">colour =</span> <span class="st">&quot;Country code:&quot;</span>) <span class="sc">+</span></span>
+<span id="cb6-39"><a href="#cb6-39" tabindex="-1"></a>  </span>
+<span id="cb6-40"><a href="#cb6-40" tabindex="-1"></a>  <span class="co"># Apply additional theme settings to customise the appearance:</span></span>
+<span id="cb6-41"><a href="#cb6-41" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb6-42"><a href="#cb6-42" tabindex="-1"></a>    <span class="at">legend.position =</span> <span class="st">&quot;none&quot;</span>,                <span class="co"># Do not show legend</span></span>
+<span id="cb6-43"><a href="#cb6-43" tabindex="-1"></a>    <span class="at">axis.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">10</span>),    <span class="co"># Decrease axis label font size</span></span>
+<span id="cb6-44"><a href="#cb6-44" tabindex="-1"></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">11</span>),    <span class="co"># Decrease plot title font size</span></span>
+<span id="cb6-45"><a href="#cb6-45" tabindex="-1"></a>    <span class="at">panel.spacing =</span> <span class="fu">unit</span>(<span class="dv">1</span>, <span class="st">&quot;lines&quot;</span>),        <span class="co"># Increase spacing between facets</span></span>
+<span id="cb6-46"><a href="#cb6-46" tabindex="-1"></a>    <span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">8</span>),    <span class="co"># Decrease x-axis value font size</span></span>
+<span id="cb6-47"><a href="#cb6-47" tabindex="-1"></a>    <span class="at">axis.text.y =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">8</span>)     <span class="co"># Decrease y-axis value font size</span></span>
+<span id="cb6-48"><a href="#cb6-48" tabindex="-1"></a>  )</span></code></pre></div>
+<p><img src="r5_files/figure-html/unnamed-chunk-6-1.png" width="90%" style="display: block; margin: auto;" /></p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="co"># Create a plot of new weekly cases</span></span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a><span class="co"># Initialise a new ggplot for weekly new cases.</span></span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a><span class="co"># - x-axis: Date_reported</span></span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a><span class="co"># - y-axis: New_cases (number of new cases reported within the week)</span></span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a><span class="co"># - colour: differentiates the lines by Country_code</span></span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a><span class="fu">ggplot</span>(df_filtered, </span>
+<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a>       <span class="fu">aes</span>(<span class="at">x =</span> Date_reported, <span class="at">y =</span> New_cases, <span class="at">colour =</span> Country_code)) <span class="sc">+</span></span>
+<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a>  <span class="co"># Add line geometry to plot trends over time.</span></span>
+<span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb7-10"><a href="#cb7-10" tabindex="-1"></a>  <span class="co"># Use facet_wrap to create individual panels for each country, with 3 panels per row</span></span>
+<span id="cb7-11"><a href="#cb7-11" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> Country_code, <span class="at">ncol =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb7-12"><a href="#cb7-12" tabindex="-1"></a>  </span>
+<span id="cb7-13"><a href="#cb7-13" tabindex="-1"></a>  <span class="co"># Customise the x-axis with specific date breaks and labels (same as before)</span></span>
+<span id="cb7-14"><a href="#cb7-14" tabindex="-1"></a>  <span class="fu">scale_x_date</span>(</span>
+<span id="cb7-15"><a href="#cb7-15" tabindex="-1"></a>    <span class="at">breaks =</span> <span class="fu">as.Date</span>(<span class="fu">c</span>(<span class="st">&quot;2020-01-01&quot;</span>, <span class="st">&quot;2021-01-01&quot;</span>, <span class="st">&quot;2022-01-01&quot;</span>, </span>
+<span id="cb7-16"><a href="#cb7-16" tabindex="-1"></a>                       <span class="st">&quot;2023-01-01&quot;</span>, <span class="st">&quot;2024-01-01&quot;</span>, <span class="st">&quot;2025-01-01&quot;</span>)),</span>
+<span id="cb7-17"><a href="#cb7-17" tabindex="-1"></a>    <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">&quot;2020&quot;</span>, <span class="st">&quot;2021&quot;</span>, <span class="st">&quot;2022&quot;</span>, <span class="st">&quot;2023&quot;</span>, <span class="st">&quot;2024&quot;</span>, <span class="st">&quot;2025&quot;</span>)</span>
+<span id="cb7-18"><a href="#cb7-18" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb7-19"><a href="#cb7-19" tabindex="-1"></a>  <span class="co"># Transform the y-axis to a logarithmic scale</span></span>
+<span id="cb7-20"><a href="#cb7-20" tabindex="-1"></a>  <span class="fu">scale_y_log10</span>() <span class="sc">+</span>                        </span>
+<span id="cb7-21"><a href="#cb7-21" tabindex="-1"></a> </span>
+<span id="cb7-22"><a href="#cb7-22" tabindex="-1"></a>  <span class="co"># Titles and labels</span></span>
+<span id="cb7-23"><a href="#cb7-23" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&quot;Weekly new COVID-19 cases&quot;</span>,</span>
+<span id="cb7-24"><a href="#cb7-24" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">&quot;Date&quot;</span>,</span>
+<span id="cb7-25"><a href="#cb7-25" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">&quot;Weekly new cases&quot;</span>,</span>
+<span id="cb7-26"><a href="#cb7-26" tabindex="-1"></a>       <span class="at">colour =</span> <span class="st">&quot;Country code:&quot;</span>) <span class="sc">+</span></span>
+<span id="cb7-27"><a href="#cb7-27" tabindex="-1"></a>  </span>
+<span id="cb7-28"><a href="#cb7-28" tabindex="-1"></a>  <span class="co"># Apply similar theme customisations to adjust the plot appearance</span></span>
+<span id="cb7-29"><a href="#cb7-29" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb7-30"><a href="#cb7-30" tabindex="-1"></a>    <span class="at">legend.position =</span> <span class="st">&quot;none&quot;</span>,                <span class="co"># Do not show legend</span></span>
+<span id="cb7-31"><a href="#cb7-31" tabindex="-1"></a>    <span class="at">axis.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">10</span>),    <span class="co"># Decrease axis label font size</span></span>
+<span id="cb7-32"><a href="#cb7-32" tabindex="-1"></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">11</span>),    <span class="co"># Decrease plot title font size</span></span>
+<span id="cb7-33"><a href="#cb7-33" tabindex="-1"></a>    <span class="at">panel.spacing =</span> <span class="fu">unit</span>(<span class="dv">1</span>, <span class="st">&quot;lines&quot;</span>),        <span class="co"># Increase spacing between facets</span></span>
+<span id="cb7-34"><a href="#cb7-34" tabindex="-1"></a>    <span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">8</span>),    <span class="co"># Decrease x-axis value font size</span></span>
+<span id="cb7-35"><a href="#cb7-35" tabindex="-1"></a>    <span class="at">axis.text.y =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">8</span>)     <span class="co"># Decrease y-axis value font size</span></span>
+<span id="cb7-36"><a href="#cb7-36" tabindex="-1"></a>  )</span></code></pre></div>
+<p><img src="r5_files/figure-html/unnamed-chunk-6-2.png" width="90%" style="display: block; margin: auto;" /></p>
+<p>Next, create plots of cumulative and new deaths:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="co"># Create a plot of cumulative deaths</span></span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a><span class="fu">ggplot</span>(df_filtered, </span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>       <span class="fu">aes</span>(<span class="at">x =</span> Date_reported, <span class="at">y =</span> Cumulative_deaths, <span class="at">colour =</span> Country_code)) <span class="sc">+</span></span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> Country_code, <span class="at">ncol =</span> <span class="dv">3</span>) <span class="sc">+</span>  <span class="co"># 3 facets per row</span></span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a>  </span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a>  <span class="co"># Set X axis scale manually and log scale for Y</span></span>
+<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a>  <span class="fu">scale_x_date</span>(</span>
+<span id="cb8-9"><a href="#cb8-9" tabindex="-1"></a>    <span class="at">breaks =</span> <span class="fu">as.Date</span>(<span class="fu">c</span>(<span class="st">&quot;2020-01-01&quot;</span>, <span class="st">&quot;2021-01-01&quot;</span>, <span class="st">&quot;2022-01-01&quot;</span>, </span>
+<span id="cb8-10"><a href="#cb8-10" tabindex="-1"></a>                       <span class="st">&quot;2023-01-01&quot;</span>, <span class="st">&quot;2024-01-01&quot;</span>, <span class="st">&quot;2025-01-01&quot;</span>)),</span>
+<span id="cb8-11"><a href="#cb8-11" tabindex="-1"></a>    <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">&quot;2020&quot;</span>, <span class="st">&quot;2021&quot;</span>, <span class="st">&quot;2022&quot;</span>, <span class="st">&quot;2023&quot;</span>, <span class="st">&quot;2024&quot;</span>, <span class="st">&quot;2025&quot;</span>)</span>
+<span id="cb8-12"><a href="#cb8-12" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb8-13"><a href="#cb8-13" tabindex="-1"></a>  <span class="fu">scale_y_log10</span>() <span class="sc">+</span>                         </span>
+<span id="cb8-14"><a href="#cb8-14" tabindex="-1"></a> </span>
+<span id="cb8-15"><a href="#cb8-15" tabindex="-1"></a>  <span class="co"># Titles and labels</span></span>
+<span id="cb8-16"><a href="#cb8-16" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&quot;Cumilative COVID-19-related deaths&quot;</span>,</span>
+<span id="cb8-17"><a href="#cb8-17" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">&quot;Date&quot;</span>,</span>
+<span id="cb8-18"><a href="#cb8-18" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">&quot;Cumulative deaths&quot;</span>,</span>
+<span id="cb8-19"><a href="#cb8-19" tabindex="-1"></a>       <span class="at">colour =</span> <span class="st">&quot;Country code:&quot;</span>) <span class="sc">+</span></span>
+<span id="cb8-20"><a href="#cb8-20" tabindex="-1"></a>  </span>
+<span id="cb8-21"><a href="#cb8-21" tabindex="-1"></a>  <span class="co"># Apply similar theme customisations to adjust the plot appearance</span></span>
+<span id="cb8-22"><a href="#cb8-22" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb8-23"><a href="#cb8-23" tabindex="-1"></a>    <span class="at">legend.position =</span> <span class="st">&quot;none&quot;</span>,                <span class="co"># Do not show legend</span></span>
+<span id="cb8-24"><a href="#cb8-24" tabindex="-1"></a>    <span class="at">axis.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">10</span>),    <span class="co"># Decrease axis label font size</span></span>
+<span id="cb8-25"><a href="#cb8-25" tabindex="-1"></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">11</span>),    <span class="co"># Decrease plot title font size</span></span>
+<span id="cb8-26"><a href="#cb8-26" tabindex="-1"></a>    <span class="at">panel.spacing =</span> <span class="fu">unit</span>(<span class="dv">1</span>, <span class="st">&quot;lines&quot;</span>),        <span class="co"># Increase spacing between facets</span></span>
+<span id="cb8-27"><a href="#cb8-27" tabindex="-1"></a>    <span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">8</span>),    <span class="co"># Decrease x-axis value font size</span></span>
+<span id="cb8-28"><a href="#cb8-28" tabindex="-1"></a>    <span class="at">axis.text.y =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">8</span>)     <span class="co"># Decrease y-axis value font size</span></span>
+<span id="cb8-29"><a href="#cb8-29" tabindex="-1"></a>  )</span></code></pre></div>
+<p><img src="r5_files/figure-html/unnamed-chunk-7-1.png" width="90%" style="display: block; margin: auto;" /></p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="co"># Create a plot of new weekly deaths</span></span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a><span class="fu">ggplot</span>(df_filtered, </span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a>       <span class="fu">aes</span>(<span class="at">x =</span> Date_reported, <span class="at">y =</span> New_deaths, <span class="at">colour =</span> Country_code)) <span class="sc">+</span></span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> Country_code, <span class="at">ncol =</span> <span class="dv">3</span>) <span class="sc">+</span>  <span class="co"># 3 facets per row</span></span>
+<span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a>  </span>
+<span id="cb9-7"><a href="#cb9-7" tabindex="-1"></a>  <span class="co"># Set X axis scale manually and log scale for Y</span></span>
+<span id="cb9-8"><a href="#cb9-8" tabindex="-1"></a>  <span class="fu">scale_x_date</span>(</span>
+<span id="cb9-9"><a href="#cb9-9" tabindex="-1"></a>    <span class="at">breaks =</span> <span class="fu">as.Date</span>(<span class="fu">c</span>(<span class="st">&quot;2020-01-01&quot;</span>, <span class="st">&quot;2021-01-01&quot;</span>, <span class="st">&quot;2022-01-01&quot;</span>, </span>
+<span id="cb9-10"><a href="#cb9-10" tabindex="-1"></a>                       <span class="st">&quot;2023-01-01&quot;</span>, <span class="st">&quot;2024-01-01&quot;</span>, <span class="st">&quot;2025-01-01&quot;</span>)),</span>
+<span id="cb9-11"><a href="#cb9-11" tabindex="-1"></a>    <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">&quot;2020&quot;</span>, <span class="st">&quot;2021&quot;</span>, <span class="st">&quot;2022&quot;</span>, <span class="st">&quot;2023&quot;</span>, <span class="st">&quot;2024&quot;</span>, <span class="st">&quot;2025&quot;</span>)</span>
+<span id="cb9-12"><a href="#cb9-12" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb9-13"><a href="#cb9-13" tabindex="-1"></a>  <span class="fu">scale_y_log10</span>() <span class="sc">+</span>                         </span>
+<span id="cb9-14"><a href="#cb9-14" tabindex="-1"></a> </span>
+<span id="cb9-15"><a href="#cb9-15" tabindex="-1"></a>  <span class="co"># Titles and labels</span></span>
+<span id="cb9-16"><a href="#cb9-16" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&quot;Weekly new COVID-19-related deaths&quot;</span>,</span>
+<span id="cb9-17"><a href="#cb9-17" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">&quot;Date&quot;</span>,</span>
+<span id="cb9-18"><a href="#cb9-18" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">&quot;Weekly new deaths&quot;</span>,</span>
+<span id="cb9-19"><a href="#cb9-19" tabindex="-1"></a>       <span class="at">colour =</span> <span class="st">&quot;Country code:&quot;</span>) <span class="sc">+</span></span>
+<span id="cb9-20"><a href="#cb9-20" tabindex="-1"></a>  </span>
+<span id="cb9-21"><a href="#cb9-21" tabindex="-1"></a>  <span class="co"># Apply similar theme customisations to adjust the plot appearance</span></span>
+<span id="cb9-22"><a href="#cb9-22" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb9-23"><a href="#cb9-23" tabindex="-1"></a>    <span class="at">legend.position =</span> <span class="st">&quot;none&quot;</span>,                <span class="co"># Do not show legend</span></span>
+<span id="cb9-24"><a href="#cb9-24" tabindex="-1"></a>    <span class="at">axis.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">10</span>),    <span class="co"># Decrease axis label font size</span></span>
+<span id="cb9-25"><a href="#cb9-25" tabindex="-1"></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">11</span>),    <span class="co"># Decrease plot title font size</span></span>
+<span id="cb9-26"><a href="#cb9-26" tabindex="-1"></a>    <span class="at">panel.spacing =</span> <span class="fu">unit</span>(<span class="dv">1</span>, <span class="st">&quot;lines&quot;</span>),        <span class="co"># Increase spacing between facets</span></span>
+<span id="cb9-27"><a href="#cb9-27" tabindex="-1"></a>    <span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">8</span>),    <span class="co"># Decrease x-axis value font size</span></span>
+<span id="cb9-28"><a href="#cb9-28" tabindex="-1"></a>    <span class="at">axis.text.y =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">8</span>)     <span class="co"># Decrease y-axis value font size</span></span>
+<span id="cb9-29"><a href="#cb9-29" tabindex="-1"></a>  )</span></code></pre></div>
+<p><img src="r5_files/figure-html/unnamed-chunk-7-2.png" width="90%" style="display: block; margin: auto;" /></p>
+<p>Note in the above that most of the selected countries have ceased
+reporting COVID-19 data. For example, Japan stopped reporting at the end
+of 2024, Australia discontinued reporting COVID-19 cases around
+mid-2024, and the United States halted reporting in mid-2023.
+Additionally, although new cases have never dropped to zero, some
+countries have experienced significant reductions; in India, for
+instance, the number of new weekly cases decreased dramatically from 1
+million to just 100.</p>
+</div>
+<div id="map-covid-cases-and-deaths" class="section level1">
+<h1>Map COVID cases and deaths</h1>
+<p>While the above plots provide valuable insights for a selected group
+of countries, it is impractical to create individual plots for all 240
+countries and territories listed in the WHO dataset. Instead,
+visualising the complete data on a world map offers a more effective
+alternative, presenting a comprehensive global perspective.</p>
+<p>In the following examples we produce a series of maps exploring the
+spatial and temporal trends in the COVID-19 data.</p>
+<div id="load-spatial-data" class="section level2">
+<h2>Load spatial data</h2>
+<p>Load provided data layers:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="co"># Specify the file paths for the spatial data</span></span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a>bnd <span class="ot">&lt;-</span> <span class="st">&quot;./data/data_covid/ne_110m_admin_0_countries.shp&quot;</span></span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a>grd <span class="ot">&lt;-</span> <span class="st">&quot;./data/data_covid/ne_110m_graticules_30.shp&quot;</span></span>
+<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a>box <span class="ot">&lt;-</span> <span class="st">&quot;./data/data_covid//ne_110m_wgs84_bounding_box.shp&quot;</span></span>
+<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a></span>
+<span id="cb10-6"><a href="#cb10-6" tabindex="-1"></a><span class="co"># Read in the spatial data using the &#39;read_sf&#39; function from the sf package,</span></span>
+<span id="cb10-7"><a href="#cb10-7" tabindex="-1"></a><span class="co"># which imports the shapefiles as spatial data frames</span></span>
+<span id="cb10-8"><a href="#cb10-8" tabindex="-1"></a>ne_cntry <span class="ot">&lt;-</span> <span class="fu">read_sf</span>(bnd)</span>
+<span id="cb10-9"><a href="#cb10-9" tabindex="-1"></a>ne_grid <span class="ot">&lt;-</span> <span class="fu">read_sf</span>(grd)</span>
+<span id="cb10-10"><a href="#cb10-10" tabindex="-1"></a>ne_box <span class="ot">&lt;-</span> <span class="fu">read_sf</span>(box)</span></code></pre></div>
+<p>Print a list of attribute column names in <code>ne_cntry</code>:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="co"># The names() function retrieves the column names </span></span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a><span class="co"># (i.e. attribute names) of the spatial data frame</span></span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a><span class="fu">names</span>(ne_cntry)</span></code></pre></div>
+<pre><code>##   [1] &quot;featurecla&quot; &quot;scalerank&quot;  &quot;LABELRANK&quot;  &quot;SOVEREIGNT&quot; &quot;SOV_A3&quot;    
+##   [6] &quot;ADM0_DIF&quot;   &quot;LEVEL&quot;      &quot;TYPE&quot;       &quot;TLC&quot;        &quot;ADMIN&quot;     
+##  [11] &quot;ADM0_A3&quot;    &quot;GEOU_DIF&quot;   &quot;GEOUNIT&quot;    &quot;GU_A3&quot;      &quot;SU_DIF&quot;    
+##  [16] &quot;SUBUNIT&quot;    &quot;SU_A3&quot;      &quot;BRK_DIFF&quot;   &quot;NAME&quot;       &quot;NAME_LONG&quot; 
+##  [21] &quot;BRK_A3&quot;     &quot;BRK_NAME&quot;   &quot;BRK_GROUP&quot;  &quot;ABBREV&quot;     &quot;POSTAL&quot;    
+##  [26] &quot;FORMAL_EN&quot;  &quot;FORMAL_FR&quot;  &quot;NAME_CIAWF&quot; &quot;NOTE_ADM0&quot;  &quot;NOTE_BRK&quot;  
+##  [31] &quot;NAME_SORT&quot;  &quot;NAME_ALT&quot;   &quot;MAPCOLOR7&quot;  &quot;MAPCOLOR8&quot;  &quot;MAPCOLOR9&quot; 
+##  [36] &quot;MAPCOLOR13&quot; &quot;POP_EST&quot;    &quot;POP_RANK&quot;   &quot;POP_YEAR&quot;   &quot;GDP_MD&quot;    
+##  [41] &quot;GDP_YEAR&quot;   &quot;ECONOMY&quot;    &quot;INCOME_GRP&quot; &quot;FIPS_10&quot;    &quot;ISO_A2&quot;    
+##  [46] &quot;ISO_A2_EH&quot;  &quot;ISO_A3&quot;     &quot;ISO_A3_EH&quot;  &quot;ISO_N3&quot;     &quot;ISO_N3_EH&quot; 
+##  [51] &quot;UN_A3&quot;      &quot;WB_A2&quot;      &quot;WB_A3&quot;      &quot;WOE_ID&quot;     &quot;WOE_ID_EH&quot; 
+##  [56] &quot;WOE_NOTE&quot;   &quot;ADM0_ISO&quot;   &quot;ADM0_DIFF&quot;  &quot;ADM0_TLC&quot;   &quot;ADM0_A3_US&quot;
+##  [61] &quot;ADM0_A3_FR&quot; &quot;ADM0_A3_RU&quot; &quot;ADM0_A3_ES&quot; &quot;ADM0_A3_CN&quot; &quot;ADM0_A3_TW&quot;
+##  [66] &quot;ADM0_A3_IN&quot; &quot;ADM0_A3_NP&quot; &quot;ADM0_A3_PK&quot; &quot;ADM0_A3_DE&quot; &quot;ADM0_A3_GB&quot;
+##  [71] &quot;ADM0_A3_BR&quot; &quot;ADM0_A3_IL&quot; &quot;ADM0_A3_PS&quot; &quot;ADM0_A3_SA&quot; &quot;ADM0_A3_EG&quot;
+##  [76] &quot;ADM0_A3_MA&quot; &quot;ADM0_A3_PT&quot; &quot;ADM0_A3_AR&quot; &quot;ADM0_A3_JP&quot; &quot;ADM0_A3_KO&quot;
+##  [81] &quot;ADM0_A3_VN&quot; &quot;ADM0_A3_TR&quot; &quot;ADM0_A3_ID&quot; &quot;ADM0_A3_PL&quot; &quot;ADM0_A3_GR&quot;
+##  [86] &quot;ADM0_A3_IT&quot; &quot;ADM0_A3_NL&quot; &quot;ADM0_A3_SE&quot; &quot;ADM0_A3_BD&quot; &quot;ADM0_A3_UA&quot;
+##  [91] &quot;ADM0_A3_UN&quot; &quot;ADM0_A3_WB&quot; &quot;CONTINENT&quot;  &quot;REGION_UN&quot;  &quot;SUBREGION&quot; 
+##  [96] &quot;REGION_WB&quot;  &quot;NAME_LEN&quot;   &quot;LONG_LEN&quot;   &quot;ABBREV_LEN&quot; &quot;TINY&quot;      
+## [101] &quot;HOMEPART&quot;   &quot;MIN_ZOOM&quot;   &quot;MIN_LABEL&quot;  &quot;MAX_LABEL&quot;  &quot;LABEL_X&quot;   
+## [106] &quot;LABEL_Y&quot;    &quot;NE_ID&quot;      &quot;WIKIDATAID&quot; &quot;NAME_AR&quot;    &quot;NAME_BN&quot;   
+## [111] &quot;NAME_DE&quot;    &quot;NAME_EN&quot;    &quot;NAME_ES&quot;    &quot;NAME_FA&quot;    &quot;NAME_FR&quot;   
+## [116] &quot;NAME_EL&quot;    &quot;NAME_HE&quot;    &quot;NAME_HI&quot;    &quot;NAME_HU&quot;    &quot;NAME_ID&quot;   
+## [121] &quot;NAME_IT&quot;    &quot;NAME_JA&quot;    &quot;NAME_KO&quot;    &quot;NAME_NL&quot;    &quot;NAME_PL&quot;   
+## [126] &quot;NAME_PT&quot;    &quot;NAME_RU&quot;    &quot;NAME_SV&quot;    &quot;NAME_TR&quot;    &quot;NAME_UK&quot;   
+## [131] &quot;NAME_UR&quot;    &quot;NAME_VI&quot;    &quot;NAME_ZH&quot;    &quot;NAME_ZHT&quot;   &quot;FCLASS_ISO&quot;
+## [136] &quot;TLC_DIFF&quot;   &quot;FCLASS_TLC&quot; &quot;FCLASS_US&quot;  &quot;FCLASS_FR&quot;  &quot;FCLASS_RU&quot; 
+## [141] &quot;FCLASS_ES&quot;  &quot;FCLASS_CN&quot;  &quot;FCLASS_TW&quot;  &quot;FCLASS_IN&quot;  &quot;FCLASS_NP&quot; 
+## [146] &quot;FCLASS_PK&quot;  &quot;FCLASS_DE&quot;  &quot;FCLASS_GB&quot;  &quot;FCLASS_BR&quot;  &quot;FCLASS_IL&quot; 
+## [151] &quot;FCLASS_PS&quot;  &quot;FCLASS_SA&quot;  &quot;FCLASS_EG&quot;  &quot;FCLASS_MA&quot;  &quot;FCLASS_PT&quot; 
+## [156] &quot;FCLASS_AR&quot;  &quot;FCLASS_JP&quot;  &quot;FCLASS_KO&quot;  &quot;FCLASS_VN&quot;  &quot;FCLASS_TR&quot; 
+## [161] &quot;FCLASS_ID&quot;  &quot;FCLASS_PL&quot;  &quot;FCLASS_GR&quot;  &quot;FCLASS_IT&quot;  &quot;FCLASS_NL&quot; 
+## [166] &quot;FCLASS_SE&quot;  &quot;FCLASS_BD&quot;  &quot;FCLASS_UA&quot;  &quot;geometry&quot;</code></pre>
+<p>As seen above, the <code>ne_cntry</code> layer contain 169 attribute
+columns. Since we do not need all this information, we use the following
+code to drop the unwanted columns and retain only the relevant
+attributes:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a><span class="co"># Define a vector of column names to retain:</span></span>
+<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a><span class="co"># - &quot;NAME&quot;: Country name</span></span>
+<span id="cb13-3"><a href="#cb13-3" tabindex="-1"></a><span class="co"># - &quot;POP_EST&quot;: Population estimate</span></span>
+<span id="cb13-4"><a href="#cb13-4" tabindex="-1"></a><span class="co"># - &quot;CONTINENT&quot;: Continent name</span></span>
+<span id="cb13-5"><a href="#cb13-5" tabindex="-1"></a><span class="co"># - &quot;REGION_UN&quot;: United Nations region</span></span>
+<span id="cb13-6"><a href="#cb13-6" tabindex="-1"></a><span class="co"># - &quot;SUBREGION&quot;: Subregion</span></span>
+<span id="cb13-7"><a href="#cb13-7" tabindex="-1"></a><span class="co"># - &quot;ISO_A2&quot;: ISO country code (to be renamed later)</span></span>
+<span id="cb13-8"><a href="#cb13-8" tabindex="-1"></a><span class="co"># - The geometry column name is extracted using attr(ne_cntry, &quot;sf_column&quot;)</span></span>
+<span id="cb13-9"><a href="#cb13-9" tabindex="-1"></a>ne_cntry_keep <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;NAME&quot;</span>, <span class="st">&quot;POP_EST&quot;</span>, <span class="st">&quot;CONTINENT&quot;</span>, </span>
+<span id="cb13-10"><a href="#cb13-10" tabindex="-1"></a>                   <span class="st">&quot;REGION_UN&quot;</span>, <span class="st">&quot;SUBREGION&quot;</span>, <span class="st">&quot;ISO_A2&quot;</span>, <span class="fu">attr</span>(ne_cntry, <span class="st">&quot;sf_column&quot;</span>))</span>
+<span id="cb13-11"><a href="#cb13-11" tabindex="-1"></a></span>
+<span id="cb13-12"><a href="#cb13-12" tabindex="-1"></a><span class="co"># Use dplyr&#39;s select() function to retain only the specified columns from ne_cntry</span></span>
+<span id="cb13-13"><a href="#cb13-13" tabindex="-1"></a><span class="co"># Then, rename the &quot;ISO_A2&quot; column to &quot;Country_code&quot; for clarity</span></span>
+<span id="cb13-14"><a href="#cb13-14" tabindex="-1"></a>ne_cntry <span class="ot">&lt;-</span> ne_cntry <span class="sc">%&gt;%</span> </span>
+<span id="cb13-15"><a href="#cb13-15" tabindex="-1"></a>  <span class="fu">select</span>(<span class="fu">all_of</span>(ne_cntry_keep)) <span class="sc">%&gt;%</span> </span>
+<span id="cb13-16"><a href="#cb13-16" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">Country_code =</span> ISO_A2)</span>
+<span id="cb13-17"><a href="#cb13-17" tabindex="-1"></a></span>
+<span id="cb13-18"><a href="#cb13-18" tabindex="-1"></a><span class="co"># Print the first few rows of the cleaned ne_cntry object to verify the changes</span></span>
+<span id="cb13-19"><a href="#cb13-19" tabindex="-1"></a><span class="fu">head</span>(ne_cntry)</span></code></pre></div>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["NAME"],"name":[1],"type":["chr"],"align":["left"]},{"label":["POP_EST"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["CONTINENT"],"name":[3],"type":["chr"],"align":["left"]},{"label":["REGION_UN"],"name":[4],"type":["chr"],"align":["left"]},{"label":["SUBREGION"],"name":[5],"type":["chr"],"align":["left"]},{"label":["Country_code"],"name":[6],"type":["chr"],"align":["left"]},{"label":["geometry"],"name":[7],"type":["s_MULTIP"],"align":["right"]}],"data":[{"1":"Fiji","2":"889953","3":"Oceania","4":"Oceania","5":"Melanesia","6":"FJ","7":"<s_MULTIP>"},{"1":"Tanzania","2":"58005463","3":"Africa","4":"Africa","5":"Eastern Africa","6":"TZ","7":"<s_MULTIP>"},{"1":"W. Sahara","2":"603253","3":"Africa","4":"Africa","5":"Northern Africa","6":"EH","7":"<s_MULTIP>"},{"1":"Canada","2":"37589262","3":"North America","4":"Americas","5":"Northern America","6":"CA","7":"<s_MULTIP>"},{"1":"United States of America","2":"328239523","3":"North America","4":"Americas","5":"Northern America","6":"US","7":"<s_MULTIP>"},{"1":"Kazakhstan","2":"18513930","3":"Asia","4":"Asia","5":"Central Asia","6":"KZ","7":"<s_MULTIP>"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+<div id="total-cases-and-deaths" class="section level2">
+<h2>Total cases and deaths</h2>
+<p>In our first example, we will create a map displaying the total
+number of COVID-19 cases and deaths. To achieve this, we first aggregate
+the weekly data by summing all reported cases and deaths, and then we
+join this new data with the <code>ne_cntry</code> dataset.</p>
+<p>The <strong>dplyr</strong> package offers a suite of join functions
+that simplify the process of merging data frames by aligning rows based
+on common key variables. These functions enable you to combine related
+datasets in a way that suits your analytical needs:</p>
+<ul>
+<li><p><code>inner_join()</code>: Returns only those rows from the first
+data frame (<code>x</code>) that have a corresponding match in the
+second data frame (<code>y</code>). This operation is equivalent to an
+<strong>intersection</strong>, ensuring that the resulting dataset only
+contains observations that appear in both datasets.</p></li>
+<li><p><code>left_join()</code>: Retains all rows from the first data
+frame (<code>x</code>) and attaches matching rows from the second data
+frame (<code>y</code>). If a match is not found in <code>y</code>, the
+resulting dataset will include <code>NA</code> values for the columns
+coming from <code>y</code>. This is particularly useful when you want to
+preserve the full context of your primary dataset while supplementing it
+with additional details from another source.</p></li>
+<li><p><code>right_join()</code>: The mirror image of
+<code>left_join()</code>, this function keeps all rows from the second
+data frame (<code>y</code>) and appends matching data from the first
+data frame (<code>x</code>). Rows in <code>y</code> without a
+corresponding match in <code>x</code> will have <code>NA</code> values
+for the columns from <code>x</code>.</p></li>
+<li><p><code>full_join()</code>: Combines all observations from both
+data frames (<code>x</code> and <code>y</code>), effectively taking the
+<strong>union</strong> of the two datasets. For rows where a match
+cannot be found, the resulting data frame will display <code>NA</code>
+for the missing values. This comprehensive approach is ideal when you
+need a complete overview of the data from both sources, regardless of
+whether every observation has a direct counterpart.</p></li>
+</ul>
+<p>For our purposes, we will perform a <code>full_join</code>:</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a><span class="co"># Calculate total COVID-19 cases and deaths by country</span></span>
+<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a><span class="co"># Group the cleaned COVID data by the Country_code field</span></span>
+<span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a>covid_total <span class="ot">&lt;-</span> covid_data_cleaned <span class="sc">%&gt;%</span></span>
+<span id="cb14-4"><a href="#cb14-4" tabindex="-1"></a>  <span class="fu">group_by</span>(Country_code) <span class="sc">%&gt;%</span></span>
+<span id="cb14-5"><a href="#cb14-5" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb14-6"><a href="#cb14-6" tabindex="-1"></a>    <span class="co"># Sum new cases per country.</span></span>
+<span id="cb14-7"><a href="#cb14-7" tabindex="-1"></a>    <span class="co"># Use pmax(New_cases, 0) to treat any negative values as zero,</span></span>
+<span id="cb14-8"><a href="#cb14-8" tabindex="-1"></a>    <span class="co"># and na.rm = TRUE to ignore missing values</span></span>
+<span id="cb14-9"><a href="#cb14-9" tabindex="-1"></a>    <span class="at">Cases =</span> <span class="fu">sum</span>(<span class="fu">pmax</span>(New_cases, <span class="dv">0</span>), <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb14-10"><a href="#cb14-10" tabindex="-1"></a>    </span>
+<span id="cb14-11"><a href="#cb14-11" tabindex="-1"></a>    <span class="co"># Sum new deaths per country, also treating negative values as zero</span></span>
+<span id="cb14-12"><a href="#cb14-12" tabindex="-1"></a>    <span class="at">Deaths =</span> <span class="fu">sum</span>(<span class="fu">pmax</span>(New_deaths, <span class="dv">0</span>), <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb14-13"><a href="#cb14-13" tabindex="-1"></a>    </span>
+<span id="cb14-14"><a href="#cb14-14" tabindex="-1"></a>    <span class="co"># Drop the grouping structure after summarisation</span></span>
+<span id="cb14-15"><a href="#cb14-15" tabindex="-1"></a>    <span class="at">.groups =</span> <span class="st">&#39;drop&#39;</span></span>
+<span id="cb14-16"><a href="#cb14-16" tabindex="-1"></a>  )</span>
+<span id="cb14-17"><a href="#cb14-17" tabindex="-1"></a></span>
+<span id="cb14-18"><a href="#cb14-18" tabindex="-1"></a><span class="co"># Merge the spatial data (ne_cntry) with the summarised COVID totals (covid_total)</span></span>
+<span id="cb14-19"><a href="#cb14-19" tabindex="-1"></a><span class="co"># The join is performed on the common field &quot;Country_code&quot;</span></span>
+<span id="cb14-20"><a href="#cb14-20" tabindex="-1"></a>ne_cntry_covid_total <span class="ot">=</span> <span class="fu">full_join</span>(ne_cntry, covid_total, <span class="at">by =</span> <span class="fu">join_by</span>(Country_code))</span>
+<span id="cb14-21"><a href="#cb14-21" tabindex="-1"></a></span>
+<span id="cb14-22"><a href="#cb14-22" tabindex="-1"></a><span class="co"># Print the names of the available fields in the merged dataset</span></span>
+<span id="cb14-23"><a href="#cb14-23" tabindex="-1"></a><span class="fu">names</span>(ne_cntry_covid_total)</span></code></pre></div>
+<pre><code>## [1] &quot;NAME&quot;         &quot;POP_EST&quot;      &quot;CONTINENT&quot;    &quot;REGION_UN&quot;    &quot;SUBREGION&quot;   
+## [6] &quot;Country_code&quot; &quot;geometry&quot;     &quot;Cases&quot;        &quot;Deaths&quot;</code></pre>
+<p>The above confirms that the join operation was successful, with every
+total COVID-19 data entry now linked to a corresponding country
+polygon.</p>
+<p>The next bock of code plots the data with <strong>tmap</strong>:</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a><span class="co"># Plot total COVID-19 cases</span></span>
+<span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a><span class="fu">tm_shape</span>(ne_cntry_covid_total) <span class="sc">+</span></span>
+<span id="cb16-3"><a href="#cb16-3" tabindex="-1"></a>  <span class="co"># Fill each country polygon based on its &quot;Cases&quot; attribute</span></span>
+<span id="cb16-4"><a href="#cb16-4" tabindex="-1"></a>  <span class="co"># The fill.scale applies a square-root transformation to the values,</span></span>
+<span id="cb16-5"><a href="#cb16-5" tabindex="-1"></a>  <span class="co"># using the &quot;brewer.pu_bu&quot; colour palette</span></span>
+<span id="cb16-6"><a href="#cb16-6" tabindex="-1"></a>  <span class="fu">tm_fill</span>(<span class="at">fill =</span> <span class="st">&quot;Cases&quot;</span>,</span>
+<span id="cb16-7"><a href="#cb16-7" tabindex="-1"></a>          <span class="at">fill.scale =</span> <span class="fu">tm_scale_continuous_sqrt</span>(<span class="at">values =</span> <span class="st">&quot;brewer.pu_bu&quot;</span>),</span>
+<span id="cb16-8"><a href="#cb16-8" tabindex="-1"></a>          <span class="at">fill.legend =</span> <span class="fu">tm_legend</span>(<span class="at">title =</span> <span class="st">&quot;Cases </span><span class="sc">\n</span><span class="st">[total]&quot;</span>)) <span class="sc">+</span></span>
+<span id="cb16-9"><a href="#cb16-9" tabindex="-1"></a>  </span>
+<span id="cb16-10"><a href="#cb16-10" tabindex="-1"></a>  <span class="co"># Set the coordinate reference system (CRS) to the Robinson projection,</span></span>
+<span id="cb16-11"><a href="#cb16-11" tabindex="-1"></a>  <span class="co"># which is commonly used for world maps</span></span>
+<span id="cb16-12"><a href="#cb16-12" tabindex="-1"></a>  <span class="fu">tm_crs</span>(<span class="st">&quot;+proj=robin&quot;</span>) <span class="sc">+</span></span>
+<span id="cb16-13"><a href="#cb16-13" tabindex="-1"></a>  </span>
+<span id="cb16-14"><a href="#cb16-14" tabindex="-1"></a>  <span class="co"># Adjust the layout by removing the frame around the map</span></span>
+<span id="cb16-15"><a href="#cb16-15" tabindex="-1"></a>  <span class="fu">tm_layout</span>(<span class="at">frame =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb16-16"><a href="#cb16-16" tabindex="-1"></a>  </span>
+<span id="cb16-17"><a href="#cb16-17" tabindex="-1"></a>  <span class="co"># Draw borders around each country polygon in black</span></span>
+<span id="cb16-18"><a href="#cb16-18" tabindex="-1"></a>  <span class="fu">tm_borders</span>(<span class="at">col =</span> <span class="st">&quot;black&quot;</span>) <span class="sc">+</span></span>
+<span id="cb16-19"><a href="#cb16-19" tabindex="-1"></a>  </span>
+<span id="cb16-20"><a href="#cb16-20" tabindex="-1"></a>  <span class="co"># Add a scale bar to the map</span></span>
+<span id="cb16-21"><a href="#cb16-21" tabindex="-1"></a>  <span class="fu">tm_scalebar</span>(<span class="at">position =</span> <span class="fu">c</span>(<span class="st">&quot;left&quot;</span>, <span class="st">&quot;center&quot;</span>), <span class="at">breaks =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">2500</span>,<span class="dv">5000</span>), <span class="at">width =</span> <span class="dv">20</span>) <span class="sc">+</span></span>
+<span id="cb16-22"><a href="#cb16-22" tabindex="-1"></a>  </span>
+<span id="cb16-23"><a href="#cb16-23" tabindex="-1"></a>  <span class="co"># Add a title to the map with a specified text size</span></span>
+<span id="cb16-24"><a href="#cb16-24" tabindex="-1"></a>  <span class="fu">tm_title</span>(<span class="st">&quot;Total COVID-19 cases&quot;</span>, <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb16-25"><a href="#cb16-25" tabindex="-1"></a>  </span>
+<span id="cb16-26"><a href="#cb16-26" tabindex="-1"></a>  <span class="co"># Overlay an additional spatial layer (the bounding box) with black borders</span></span>
+<span id="cb16-27"><a href="#cb16-27" tabindex="-1"></a>  <span class="fu">tm_shape</span>(ne_box) <span class="sc">+</span> <span class="fu">tm_borders</span>(<span class="st">&quot;black&quot;</span>)</span></code></pre></div>
+<p><img src="r5_files/figure-html/unnamed-chunk-12-1.png" width="100%" style="display: block; margin: auto;" /></p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a><span class="co"># Plot total COVID-19 deaths</span></span>
+<span id="cb17-2"><a href="#cb17-2" tabindex="-1"></a><span class="fu">tm_shape</span>(ne_cntry_covid_total) <span class="sc">+</span></span>
+<span id="cb17-3"><a href="#cb17-3" tabindex="-1"></a>  <span class="co"># Fill each country polygon based on its &quot;Deaths&quot; attribute</span></span>
+<span id="cb17-4"><a href="#cb17-4" tabindex="-1"></a>  <span class="co"># A square-root transformation is applied to the fill values using the &quot;brewer.pu_rd&quot; palette</span></span>
+<span id="cb17-5"><a href="#cb17-5" tabindex="-1"></a>  <span class="fu">tm_fill</span>(<span class="at">fill =</span> <span class="st">&quot;Deaths&quot;</span>,</span>
+<span id="cb17-6"><a href="#cb17-6" tabindex="-1"></a>          <span class="at">fill.scale =</span> <span class="fu">tm_scale_continuous_sqrt</span>(<span class="at">values =</span> <span class="st">&quot;brewer.pu_rd&quot;</span>),</span>
+<span id="cb17-7"><a href="#cb17-7" tabindex="-1"></a>          <span class="at">fill.legend =</span> <span class="fu">tm_legend</span>(<span class="at">title =</span> <span class="st">&quot;Deaths </span><span class="sc">\n</span><span class="st">[total]&quot;</span>)) <span class="sc">+</span></span>
+<span id="cb17-8"><a href="#cb17-8" tabindex="-1"></a>  </span>
+<span id="cb17-9"><a href="#cb17-9" tabindex="-1"></a>  <span class="co"># Set the projection to Robinson for a balanced world view</span></span>
+<span id="cb17-10"><a href="#cb17-10" tabindex="-1"></a>  <span class="fu">tm_crs</span>(<span class="st">&quot;+proj=robin&quot;</span>) <span class="sc">+</span></span>
+<span id="cb17-11"><a href="#cb17-11" tabindex="-1"></a>  </span>
+<span id="cb17-12"><a href="#cb17-12" tabindex="-1"></a>  <span class="co"># Remove the default frame around the map</span></span>
+<span id="cb17-13"><a href="#cb17-13" tabindex="-1"></a>  <span class="fu">tm_layout</span>(<span class="at">frame =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb17-14"><a href="#cb17-14" tabindex="-1"></a>  </span>
+<span id="cb17-15"><a href="#cb17-15" tabindex="-1"></a>  <span class="co"># Draw black borders around the country polygons</span></span>
+<span id="cb17-16"><a href="#cb17-16" tabindex="-1"></a>  <span class="fu">tm_borders</span>(<span class="at">col =</span> <span class="st">&quot;black&quot;</span>) <span class="sc">+</span></span>
+<span id="cb17-17"><a href="#cb17-17" tabindex="-1"></a>  </span>
+<span id="cb17-18"><a href="#cb17-18" tabindex="-1"></a>  <span class="co"># Add a scale bar similar to the cases plot</span></span>
+<span id="cb17-19"><a href="#cb17-19" tabindex="-1"></a>  <span class="fu">tm_scalebar</span>(<span class="at">position =</span> <span class="fu">c</span>(<span class="st">&quot;left&quot;</span>, <span class="st">&quot;center&quot;</span>), <span class="at">breaks =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">2500</span>,<span class="dv">5000</span>), <span class="at">width =</span> <span class="dv">20</span>) <span class="sc">+</span></span>
+<span id="cb17-20"><a href="#cb17-20" tabindex="-1"></a>  </span>
+<span id="cb17-21"><a href="#cb17-21" tabindex="-1"></a>  <span class="co"># Add a title for the deaths map</span></span>
+<span id="cb17-22"><a href="#cb17-22" tabindex="-1"></a>  <span class="fu">tm_title</span>(<span class="st">&quot;Total COVID-19 deaths&quot;</span>, <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb17-23"><a href="#cb17-23" tabindex="-1"></a>  </span>
+<span id="cb17-24"><a href="#cb17-24" tabindex="-1"></a>  <span class="co"># Overlay the bounding box to provide geographic context</span></span>
+<span id="cb17-25"><a href="#cb17-25" tabindex="-1"></a>  <span class="fu">tm_shape</span>(ne_box) <span class="sc">+</span> <span class="fu">tm_borders</span>(<span class="st">&quot;black&quot;</span>)</span></code></pre></div>
+<p><img src="r5_files/figure-html/unnamed-chunk-12-2.png" width="100%" style="display: block; margin: auto;" /></p>
+<p>These maps rapidly convey insights that would have been difficult to
+discern using conventional data visualisation techniques. For instance,
+African nations reported significantly fewer cases and deaths compared
+with the rest of the world. This discrepancy might be attributable
+either to under‐reporting or to lower population density and reduced
+mobility, which decrease interactions among different groups.
+Conversely, it is staggering to observe that some countries recorded
+more than 100 million cases and over 700,000 COVID‑19‑related
+deaths.</p>
+</div>
+<div id="yearly-cases-and-deaths" class="section level2">
+<h2>Yearly cases and deaths</h2>
+<p>Next, we will create a series of maps displaying the annual totals of
+COVID-19 cases and deaths. To achieve this, we aggregate the weekly data
+by summing all reported cases and deaths for each year, and then we join
+this new yearly data with the <code>ne_cntry</code> dataset.</p>
+<p>Once again, we will perform a <code>full_join</code>:</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a><span class="co"># Calculate yearly COVID cases and deaths by grouping</span></span>
+<span id="cb18-2"><a href="#cb18-2" tabindex="-1"></a><span class="co"># the cleaned data by Year and Country_code</span></span>
+<span id="cb18-3"><a href="#cb18-3" tabindex="-1"></a>covid_years <span class="ot">&lt;-</span> covid_data_cleaned <span class="sc">%&gt;%</span></span>
+<span id="cb18-4"><a href="#cb18-4" tabindex="-1"></a>  <span class="fu">group_by</span>(Year, Country_code) <span class="sc">%&gt;%</span></span>
+<span id="cb18-5"><a href="#cb18-5" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb18-6"><a href="#cb18-6" tabindex="-1"></a>    <span class="co"># For each group, calculate the total number of cases</span></span>
+<span id="cb18-7"><a href="#cb18-7" tabindex="-1"></a>    <span class="co"># pmax() ensures that any negative New_cases are treated as zero</span></span>
+<span id="cb18-8"><a href="#cb18-8" tabindex="-1"></a>    <span class="at">Cases =</span> <span class="fu">sum</span>(<span class="fu">pmax</span>(New_cases, <span class="dv">0</span>), <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb18-9"><a href="#cb18-9" tabindex="-1"></a>    </span>
+<span id="cb18-10"><a href="#cb18-10" tabindex="-1"></a>    <span class="co"># Similarly, calculate the total number of deaths, treating negatives as zero</span></span>
+<span id="cb18-11"><a href="#cb18-11" tabindex="-1"></a>    <span class="at">Deaths =</span> <span class="fu">sum</span>(<span class="fu">pmax</span>(New_deaths, <span class="dv">0</span>), <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb18-12"><a href="#cb18-12" tabindex="-1"></a>    </span>
+<span id="cb18-13"><a href="#cb18-13" tabindex="-1"></a>    <span class="co"># Drop the grouping structure after summarising to return an ungrouped data frame</span></span>
+<span id="cb18-14"><a href="#cb18-14" tabindex="-1"></a>    <span class="at">.groups =</span> <span class="st">&#39;drop&#39;</span></span>
+<span id="cb18-15"><a href="#cb18-15" tabindex="-1"></a>  )</span>
+<span id="cb18-16"><a href="#cb18-16" tabindex="-1"></a></span>
+<span id="cb18-17"><a href="#cb18-17" tabindex="-1"></a><span class="co"># Join the spatial data (ne_cntry) with the yearly COVID data (covid_years)</span></span>
+<span id="cb18-18"><a href="#cb18-18" tabindex="-1"></a><span class="co"># using the common field &quot;Country_code&quot;.</span></span>
+<span id="cb18-19"><a href="#cb18-19" tabindex="-1"></a>ne_cntry_covid <span class="ot">=</span> <span class="fu">full_join</span>(ne_cntry, covid_years, <span class="at">by =</span> <span class="fu">join_by</span>(Country_code))</span>
+<span id="cb18-20"><a href="#cb18-20" tabindex="-1"></a></span>
+<span id="cb18-21"><a href="#cb18-21" tabindex="-1"></a><span class="co"># Print the names of the available columns in the merged spatial dataset,</span></span>
+<span id="cb18-22"><a href="#cb18-22" tabindex="-1"></a><span class="co"># which now includes attributes from both the country boundaries and COVID data</span></span>
+<span id="cb18-23"><a href="#cb18-23" tabindex="-1"></a><span class="fu">names</span>(ne_cntry_covid)</span></code></pre></div>
+<pre><code>##  [1] &quot;NAME&quot;         &quot;POP_EST&quot;      &quot;CONTINENT&quot;    &quot;REGION_UN&quot;    &quot;SUBREGION&quot;   
+##  [6] &quot;Country_code&quot; &quot;geometry&quot;     &quot;Year&quot;         &quot;Cases&quot;        &quot;Deaths&quot;</code></pre>
+<p>The above confirms that the join operation was successful, with every
+yearly COVID-19 data entry now linked to a corresponding country
+polygon.</p>
+<p>The next bock of code plots the data with <strong>tmap</strong>:</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" tabindex="-1"></a><span class="co"># Use tm_facets_wrap() to plot one map for each year</span></span>
+<span id="cb20-2"><a href="#cb20-2" tabindex="-1"></a></span>
+<span id="cb20-3"><a href="#cb20-3" tabindex="-1"></a><span class="co"># Create a faceted map for COVID-19 cases</span></span>
+<span id="cb20-4"><a href="#cb20-4" tabindex="-1"></a><span class="co"># Filter out rows with NA for Year to ensure proper faceting</span></span>
+<span id="cb20-5"><a href="#cb20-5" tabindex="-1"></a><span class="fu">tm_shape</span>(ne_cntry_covid[<span class="sc">!</span><span class="fu">is.na</span>(ne_cntry_covid<span class="sc">$</span>Year), ]) <span class="sc">+</span>  </span>
+<span id="cb20-6"><a href="#cb20-6" tabindex="-1"></a>  <span class="co"># Fill the country polygons based on the total &#39;Cases&#39; attribute</span></span>
+<span id="cb20-7"><a href="#cb20-7" tabindex="-1"></a>  <span class="co"># A square-root transformation is applied to better visualise differences,</span></span>
+<span id="cb20-8"><a href="#cb20-8" tabindex="-1"></a>  <span class="co"># using the &quot;brewer.pu_bu&quot; colour palette for a consistent colour scheme</span></span>
+<span id="cb20-9"><a href="#cb20-9" tabindex="-1"></a>  <span class="fu">tm_fill</span>(<span class="at">fill =</span> <span class="st">&quot;Cases&quot;</span>,</span>
+<span id="cb20-10"><a href="#cb20-10" tabindex="-1"></a>          <span class="at">fill.scale =</span> <span class="fu">tm_scale_continuous_sqrt</span>(<span class="at">values =</span> <span class="st">&quot;brewer.pu_bu&quot;</span>),</span>
+<span id="cb20-11"><a href="#cb20-11" tabindex="-1"></a>          <span class="at">fill.legend =</span> <span class="fu">tm_legend</span>(<span class="at">title =</span> <span class="st">&quot;Cases </span><span class="sc">\n</span><span class="st">[total]&quot;</span>)) <span class="sc">+</span></span>
+<span id="cb20-12"><a href="#cb20-12" tabindex="-1"></a>  <span class="co"># Set the coordinate reference system to Miller projection for a global map view</span></span>
+<span id="cb20-13"><a href="#cb20-13" tabindex="-1"></a>  <span class="fu">tm_crs</span>(<span class="st">&quot;+proj=mill&quot;</span>) <span class="sc">+</span></span>
+<span id="cb20-14"><a href="#cb20-14" tabindex="-1"></a>  <span class="co"># Create facets based on the &quot;Year&quot; attribute, arranging them in 2 columns</span></span>
+<span id="cb20-15"><a href="#cb20-15" tabindex="-1"></a>  <span class="fu">tm_facets_wrap</span>(<span class="at">by =</span> <span class="st">&quot;Year&quot;</span>, <span class="at">ncol =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb20-16"><a href="#cb20-16" tabindex="-1"></a></span>
+<span id="cb20-17"><a href="#cb20-17" tabindex="-1"></a><span class="co"># Add country borders to the faceted map for additional clarity</span></span>
+<span id="cb20-18"><a href="#cb20-18" tabindex="-1"></a><span class="co"># The borders are drawn over the existing map</span></span>
+<span id="cb20-19"><a href="#cb20-19" tabindex="-1"></a><span class="fu">tm_shape</span>(ne_cntry_covid) <span class="sc">+</span> <span class="fu">tm_borders</span>(<span class="at">col =</span> <span class="st">&quot;black&quot;</span>)</span></code></pre></div>
+<p><img src="r5_files/figure-html/unnamed-chunk-14-1.png" width="100%" style="display: block; margin: auto;" /></p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" tabindex="-1"></a><span class="co"># Create a faceted map for COVID-19 deaths</span></span>
+<span id="cb21-2"><a href="#cb21-2" tabindex="-1"></a><span class="co"># Ensure only rows with a valid Year are used</span></span>
+<span id="cb21-3"><a href="#cb21-3" tabindex="-1"></a><span class="fu">tm_shape</span>(ne_cntry_covid[<span class="sc">!</span><span class="fu">is.na</span>(ne_cntry_covid<span class="sc">$</span>Year), ]) <span class="sc">+</span>  </span>
+<span id="cb21-4"><a href="#cb21-4" tabindex="-1"></a>  <span class="co"># Fill the country polygons based on the total &#39;Deaths&#39; attribute</span></span>
+<span id="cb21-5"><a href="#cb21-5" tabindex="-1"></a>  <span class="co"># A square-root scale is applied, using the &quot;brewer.pu_rd&quot; palette </span></span>
+<span id="cb21-6"><a href="#cb21-6" tabindex="-1"></a>  <span class="co"># to differentiate from the cases map</span></span>
+<span id="cb21-7"><a href="#cb21-7" tabindex="-1"></a>  <span class="fu">tm_fill</span>(<span class="at">fill =</span> <span class="st">&quot;Deaths&quot;</span>,</span>
+<span id="cb21-8"><a href="#cb21-8" tabindex="-1"></a>          <span class="at">fill.scale =</span> <span class="fu">tm_scale_continuous_sqrt</span>(<span class="at">values =</span> <span class="st">&quot;brewer.pu_rd&quot;</span>),</span>
+<span id="cb21-9"><a href="#cb21-9" tabindex="-1"></a>          <span class="at">fill.legend =</span> <span class="fu">tm_legend</span>(<span class="at">title =</span> <span class="st">&quot;Deaths </span><span class="sc">\n</span><span class="st">[total]&quot;</span>)) <span class="sc">+</span></span>
+<span id="cb21-10"><a href="#cb21-10" tabindex="-1"></a>  <span class="co"># Set the coordinate reference system to Miller projection</span></span>
+<span id="cb21-11"><a href="#cb21-11" tabindex="-1"></a>  <span class="fu">tm_crs</span>(<span class="st">&quot;+proj=mill&quot;</span>) <span class="sc">+</span></span>
+<span id="cb21-12"><a href="#cb21-12" tabindex="-1"></a>  <span class="co"># Facet the map by &quot;Year&quot;, arranging the individual maps in 2 columns</span></span>
+<span id="cb21-13"><a href="#cb21-13" tabindex="-1"></a>  <span class="fu">tm_facets_wrap</span>(<span class="at">by =</span> <span class="st">&quot;Year&quot;</span>, <span class="at">ncol =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb21-14"><a href="#cb21-14" tabindex="-1"></a></span>
+<span id="cb21-15"><a href="#cb21-15" tabindex="-1"></a><span class="co"># Add country borders over the faceted deaths map for enhanced readability</span></span>
+<span id="cb21-16"><a href="#cb21-16" tabindex="-1"></a><span class="fu">tm_shape</span>(ne_cntry_covid) <span class="sc">+</span> <span class="fu">tm_borders</span>(<span class="at">col =</span> <span class="st">&quot;black&quot;</span>)</span></code></pre></div>
+<p><img src="r5_files/figure-html/unnamed-chunk-14-2.png" width="100%" style="display: block; margin: auto;" /></p>
+</div>
+<div id="normalised-cases-and-deaths" class="section level2">
+<h2>Normalised cases and deaths</h2>
+<p>While the above maps are useful, they offer only limited insight
+because each country has a different population size. A more informative
+approach is to express COVID-19 cases and deaths as percentages of each
+country’s population, thereby enabling a fairer comparison across
+regions.</p>
+<p>The following block of R code calculates the annual cases and deaths
+normalised by population size and expresses them as percentages. The
+resulting values are stored in two new columns:
+<strong>Norm_cases</strong> and <strong>Norm_deaths</strong>.</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" tabindex="-1"></a><span class="co"># Normalise cases and deaths by population</span></span>
+<span id="cb22-2"><a href="#cb22-2" tabindex="-1"></a></span>
+<span id="cb22-3"><a href="#cb22-3" tabindex="-1"></a><span class="co"># For the total data (aggregated over the entire period):</span></span>
+<span id="cb22-4"><a href="#cb22-4" tabindex="-1"></a>ne_cntry_covid_total <span class="ot">&lt;-</span> ne_cntry_covid_total <span class="sc">%&gt;%</span></span>
+<span id="cb22-5"><a href="#cb22-5" tabindex="-1"></a>  <span class="co"># Use mutate() to create two new columns:</span></span>
+<span id="cb22-6"><a href="#cb22-6" tabindex="-1"></a>  <span class="co"># - Norm_cases: the total cases normalised per 100 people,</span></span>
+<span id="cb22-7"><a href="#cb22-7" tabindex="-1"></a>  <span class="co">#   computed by dividing total Cases by the estimated population and multiplying by 100</span></span>
+<span id="cb22-8"><a href="#cb22-8" tabindex="-1"></a>  <span class="co"># - Norm_deaths: the total deaths normalised per 100 people, using the same approach</span></span>
+<span id="cb22-9"><a href="#cb22-9" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Norm_cases =</span> (Cases <span class="sc">/</span> POP_EST) <span class="sc">*</span> <span class="dv">100</span>,</span>
+<span id="cb22-10"><a href="#cb22-10" tabindex="-1"></a>         <span class="at">Norm_deaths =</span> (Deaths <span class="sc">/</span> POP_EST) <span class="sc">*</span> <span class="dv">100</span>) </span>
+<span id="cb22-11"><a href="#cb22-11" tabindex="-1"></a></span>
+<span id="cb22-12"><a href="#cb22-12" tabindex="-1"></a><span class="co"># For the yearly data:</span></span>
+<span id="cb22-13"><a href="#cb22-13" tabindex="-1"></a>ne_cntry_covid <span class="ot">&lt;-</span> ne_cntry_covid <span class="sc">%&gt;%</span></span>
+<span id="cb22-14"><a href="#cb22-14" tabindex="-1"></a>  <span class="co"># Similarly, create new columns for normalised cases and deaths per 100 people</span></span>
+<span id="cb22-15"><a href="#cb22-15" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Norm_cases =</span> (Cases <span class="sc">/</span> POP_EST) <span class="sc">*</span> <span class="dv">100</span>,</span>
+<span id="cb22-16"><a href="#cb22-16" tabindex="-1"></a>         <span class="at">Norm_deaths =</span> (Deaths <span class="sc">/</span> POP_EST) <span class="sc">*</span> <span class="dv">100</span>)</span></code></pre></div>
+<p>Redo maps using normalised values:</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" tabindex="-1"></a><span class="co"># Plot total COVID-19 cases</span></span>
+<span id="cb23-2"><a href="#cb23-2" tabindex="-1"></a><span class="fu">tm_shape</span>(ne_cntry_covid_total) <span class="sc">+</span></span>
+<span id="cb23-3"><a href="#cb23-3" tabindex="-1"></a>  <span class="fu">tm_fill</span>(<span class="at">fill =</span> <span class="st">&quot;Norm_cases&quot;</span>,</span>
+<span id="cb23-4"><a href="#cb23-4" tabindex="-1"></a>          <span class="at">fill.scale =</span> <span class="fu">tm_scale_continuous_sqrt</span>(<span class="at">values =</span> <span class="st">&quot;brewer.pu_bu&quot;</span>),</span>
+<span id="cb23-5"><a href="#cb23-5" tabindex="-1"></a>          <span class="at">fill.legend =</span> <span class="fu">tm_legend</span>(<span class="at">title =</span> <span class="st">&quot;Cases </span><span class="sc">\n</span><span class="st">[% pop.]&quot;</span>)) <span class="sc">+</span></span>
+<span id="cb23-6"><a href="#cb23-6" tabindex="-1"></a>  <span class="fu">tm_crs</span>(<span class="st">&quot;+proj=robin&quot;</span>) <span class="sc">+</span></span>
+<span id="cb23-7"><a href="#cb23-7" tabindex="-1"></a>  <span class="fu">tm_layout</span>(<span class="at">frame =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb23-8"><a href="#cb23-8" tabindex="-1"></a>  <span class="fu">tm_borders</span>(<span class="at">col =</span> <span class="st">&quot;black&quot;</span>) <span class="sc">+</span></span>
+<span id="cb23-9"><a href="#cb23-9" tabindex="-1"></a>  <span class="fu">tm_scalebar</span>(<span class="at">position =</span> <span class="fu">c</span>(<span class="st">&quot;left&quot;</span>, <span class="st">&quot;center&quot;</span>), <span class="at">breaks =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">2500</span>,<span class="dv">5000</span>), <span class="at">width =</span> <span class="dv">20</span>) <span class="sc">+</span></span>
+<span id="cb23-10"><a href="#cb23-10" tabindex="-1"></a>  <span class="fu">tm_title</span>(<span class="st">&quot;Normalised total COVID-19 cases&quot;</span>, <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb23-11"><a href="#cb23-11" tabindex="-1"></a>  <span class="fu">tm_shape</span>(ne_box) <span class="sc">+</span> <span class="fu">tm_borders</span>(<span class="st">&quot;black&quot;</span>)</span></code></pre></div>
+<p><img src="r5_files/figure-html/unnamed-chunk-16-1.png" width="100%" style="display: block; margin: auto;" /></p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" tabindex="-1"></a><span class="co"># Plot total COVID-19 deaths</span></span>
+<span id="cb24-2"><a href="#cb24-2" tabindex="-1"></a><span class="fu">tm_shape</span>(ne_cntry_covid_total) <span class="sc">+</span></span>
+<span id="cb24-3"><a href="#cb24-3" tabindex="-1"></a>  <span class="fu">tm_fill</span>(<span class="at">fill =</span> <span class="st">&quot;Norm_deaths&quot;</span>,</span>
+<span id="cb24-4"><a href="#cb24-4" tabindex="-1"></a>       <span class="at">fill.scale =</span> <span class="fu">tm_scale_continuous_sqrt</span>(<span class="at">values =</span> <span class="st">&quot;brewer.pu_rd&quot;</span>),</span>
+<span id="cb24-5"><a href="#cb24-5" tabindex="-1"></a>          <span class="at">fill.legend =</span> <span class="fu">tm_legend</span>(<span class="at">title =</span> <span class="st">&quot;Deaths </span><span class="sc">\n</span><span class="st">[% pop.]&quot;</span>)) <span class="sc">+</span></span>
+<span id="cb24-6"><a href="#cb24-6" tabindex="-1"></a>  <span class="fu">tm_crs</span>(<span class="st">&quot;+proj=robin&quot;</span>) <span class="sc">+</span></span>
+<span id="cb24-7"><a href="#cb24-7" tabindex="-1"></a>  <span class="fu">tm_layout</span>(<span class="at">frame =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb24-8"><a href="#cb24-8" tabindex="-1"></a>  <span class="fu">tm_borders</span>(<span class="at">col =</span> <span class="st">&quot;black&quot;</span>) <span class="sc">+</span></span>
+<span id="cb24-9"><a href="#cb24-9" tabindex="-1"></a>  <span class="fu">tm_scalebar</span>(<span class="at">position =</span> <span class="fu">c</span>(<span class="st">&quot;left&quot;</span>, <span class="st">&quot;center&quot;</span>), <span class="at">breaks =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">2500</span>,<span class="dv">5000</span>), <span class="at">width =</span> <span class="dv">20</span>) <span class="sc">+</span></span>
+<span id="cb24-10"><a href="#cb24-10" tabindex="-1"></a>  <span class="fu">tm_title</span>(<span class="st">&quot;Normalised total COVID-19 deaths&quot;</span>, <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb24-11"><a href="#cb24-11" tabindex="-1"></a>  <span class="fu">tm_shape</span>(ne_box) <span class="sc">+</span> <span class="fu">tm_borders</span>(<span class="st">&quot;black&quot;</span>)</span></code></pre></div>
+<p><img src="r5_files/figure-html/unnamed-chunk-16-2.png" width="100%" style="display: block; margin: auto;" /></p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" tabindex="-1"></a><span class="co"># Plot COVID-19 cases</span></span>
+<span id="cb25-2"><a href="#cb25-2" tabindex="-1"></a><span class="fu">tm_shape</span>(ne_cntry_covid[<span class="sc">!</span><span class="fu">is.na</span>(ne_cntry_covid<span class="sc">$</span>Year), ]) <span class="sc">+</span></span>
+<span id="cb25-3"><a href="#cb25-3" tabindex="-1"></a>  <span class="fu">tm_fill</span>(<span class="at">fill =</span> <span class="st">&quot;Norm_cases&quot;</span>,</span>
+<span id="cb25-4"><a href="#cb25-4" tabindex="-1"></a>          <span class="at">fill.scale =</span> <span class="fu">tm_scale_continuous_sqrt</span>(<span class="at">values =</span> <span class="st">&quot;brewer.pu_bu&quot;</span>),</span>
+<span id="cb25-5"><a href="#cb25-5" tabindex="-1"></a>          <span class="at">fill.legend =</span> <span class="fu">tm_legend</span>(<span class="at">title =</span> <span class="st">&quot;Cases </span><span class="sc">\n</span><span class="st">[% pop.]&quot;</span>)) <span class="sc">+</span></span>
+<span id="cb25-6"><a href="#cb25-6" tabindex="-1"></a>  <span class="fu">tm_crs</span>(<span class="st">&quot;+proj=mill&quot;</span>) <span class="sc">+</span></span>
+<span id="cb25-7"><a href="#cb25-7" tabindex="-1"></a>  <span class="fu">tm_facets_wrap</span>(<span class="at">by =</span> <span class="st">&quot;Year&quot;</span>, <span class="at">ncol =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb25-8"><a href="#cb25-8" tabindex="-1"></a><span class="fu">tm_shape</span>(ne_cntry_covid) <span class="sc">+</span>  <span class="fu">tm_borders</span>(<span class="at">col =</span> <span class="st">&quot;black&quot;</span>)</span></code></pre></div>
+<p><img src="r5_files/figure-html/unnamed-chunk-17-1.png" width="100%" style="display: block; margin: auto;" /></p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" tabindex="-1"></a><span class="co"># Plot COVID-19 deaths</span></span>
+<span id="cb26-2"><a href="#cb26-2" tabindex="-1"></a><span class="fu">tm_shape</span>(ne_cntry_covid[<span class="sc">!</span><span class="fu">is.na</span>(ne_cntry_covid<span class="sc">$</span>Year), ]) <span class="sc">+</span></span>
+<span id="cb26-3"><a href="#cb26-3" tabindex="-1"></a>  <span class="fu">tm_fill</span>(<span class="at">fill =</span> <span class="st">&quot;Norm_deaths&quot;</span>,</span>
+<span id="cb26-4"><a href="#cb26-4" tabindex="-1"></a>       <span class="at">fill.scale =</span> <span class="fu">tm_scale_continuous_sqrt</span>(<span class="at">values =</span> <span class="st">&quot;brewer.pu_rd&quot;</span>),</span>
+<span id="cb26-5"><a href="#cb26-5" tabindex="-1"></a>          <span class="at">fill.legend =</span> <span class="fu">tm_legend</span>(<span class="at">title =</span> <span class="st">&quot;Deaths </span><span class="sc">\n</span><span class="st">[% pop.]&quot;</span>)) <span class="sc">+</span></span>
+<span id="cb26-6"><a href="#cb26-6" tabindex="-1"></a>  <span class="fu">tm_crs</span>(<span class="st">&quot;+proj=mill&quot;</span>) <span class="sc">+</span>    </span>
+<span id="cb26-7"><a href="#cb26-7" tabindex="-1"></a>  <span class="fu">tm_facets_wrap</span>(<span class="at">by =</span> <span class="st">&quot;Year&quot;</span>, <span class="at">ncol =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb26-8"><a href="#cb26-8" tabindex="-1"></a><span class="fu">tm_shape</span>(ne_cntry_covid) <span class="sc">+</span>  <span class="fu">tm_borders</span>(<span class="at">col =</span> <span class="st">&quot;black&quot;</span>)</span></code></pre></div>
+<p><img src="r5_files/figure-html/unnamed-chunk-17-2.png" width="100%" style="display: block; margin: auto;" /></p>
+<p>Another effective approach to visualising our data is to represent
+the number of deaths as a percentage of the total COVID-19 cases. The
+following block of R code adds a new column to
+<code>ne_cntry_covid</code> with COVID-19-related deaths expressed as a
+percentage of total cases:</p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" tabindex="-1"></a><span class="co"># Normalise deaths by cases to calculate the case fatality rate (as a percentage)</span></span>
+<span id="cb27-2"><a href="#cb27-2" tabindex="-1"></a><span class="co"># Use if_else() to prevent division by zero:</span></span>
+<span id="cb27-3"><a href="#cb27-3" tabindex="-1"></a><span class="co"># - If &quot;Cases&quot; equals 0, then return NA_real_ (a missing value for numeric data)</span></span>
+<span id="cb27-4"><a href="#cb27-4" tabindex="-1"></a><span class="co"># - Otherwise, compute (Deaths / Cases) * 100</span></span>
+<span id="cb27-5"><a href="#cb27-5" tabindex="-1"></a>ne_cntry_covid_total <span class="ot">&lt;-</span> ne_cntry_covid_total <span class="sc">%&gt;%</span></span>
+<span id="cb27-6"><a href="#cb27-6" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Norm_deaths2 =</span> <span class="fu">if_else</span>(Cases <span class="sc">==</span> <span class="dv">0</span>, <span class="cn">NA_real_</span>, (Deaths <span class="sc">/</span> Cases) <span class="sc">*</span> <span class="dv">100</span>))</span>
+<span id="cb27-7"><a href="#cb27-7" tabindex="-1"></a></span>
+<span id="cb27-8"><a href="#cb27-8" tabindex="-1"></a><span class="co"># Repeat the same calculation for the yearly data</span></span>
+<span id="cb27-9"><a href="#cb27-9" tabindex="-1"></a>ne_cntry_covid <span class="ot">&lt;-</span> ne_cntry_covid <span class="sc">%&gt;%</span></span>
+<span id="cb27-10"><a href="#cb27-10" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Norm_deaths2 =</span> <span class="fu">if_else</span>(Cases <span class="sc">==</span> <span class="dv">0</span>, <span class="cn">NA_real_</span>, (Deaths <span class="sc">/</span> Cases) <span class="sc">*</span> <span class="dv">100</span>))</span></code></pre></div>
+<p>Plot COVID-19-related deaths normalised to cases:</p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" tabindex="-1"></a><span class="co"># Plot total COVID-19 deaths</span></span>
+<span id="cb28-2"><a href="#cb28-2" tabindex="-1"></a><span class="fu">tm_shape</span>(ne_cntry_covid_total) <span class="sc">+</span></span>
+<span id="cb28-3"><a href="#cb28-3" tabindex="-1"></a>  <span class="fu">tm_fill</span>(<span class="at">fill =</span> <span class="st">&quot;Norm_deaths2&quot;</span>,</span>
+<span id="cb28-4"><a href="#cb28-4" tabindex="-1"></a>       <span class="at">fill.scale =</span> <span class="fu">tm_scale_continuous_sqrt</span>(<span class="at">values =</span> <span class="st">&quot;brewer.pu_rd&quot;</span>),</span>
+<span id="cb28-5"><a href="#cb28-5" tabindex="-1"></a>          <span class="at">fill.legend =</span> <span class="fu">tm_legend</span>(<span class="at">title =</span> <span class="st">&quot;Deaths </span><span class="sc">\n</span><span class="st">[% cases]&quot;</span>)) <span class="sc">+</span></span>
+<span id="cb28-6"><a href="#cb28-6" tabindex="-1"></a>  <span class="fu">tm_crs</span>(<span class="st">&quot;+proj=robin&quot;</span>) <span class="sc">+</span></span>
+<span id="cb28-7"><a href="#cb28-7" tabindex="-1"></a>  <span class="fu">tm_layout</span>(<span class="at">frame =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb28-8"><a href="#cb28-8" tabindex="-1"></a>  <span class="fu">tm_borders</span>(<span class="at">col =</span> <span class="st">&quot;black&quot;</span>) <span class="sc">+</span></span>
+<span id="cb28-9"><a href="#cb28-9" tabindex="-1"></a>  <span class="fu">tm_scalebar</span>(<span class="at">position =</span> <span class="fu">c</span>(<span class="st">&quot;left&quot;</span>, <span class="st">&quot;center&quot;</span>), <span class="at">breaks =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">2500</span>,<span class="dv">5000</span>), <span class="at">width =</span> <span class="dv">20</span>) <span class="sc">+</span></span>
+<span id="cb28-10"><a href="#cb28-10" tabindex="-1"></a>  <span class="fu">tm_title</span>(<span class="st">&quot;Total COVID-19 deaths as percentage of cases&quot;</span>, <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb28-11"><a href="#cb28-11" tabindex="-1"></a>  <span class="fu">tm_shape</span>(ne_box) <span class="sc">+</span> <span class="fu">tm_borders</span>(<span class="st">&quot;black&quot;</span>)</span></code></pre></div>
+<p><img src="r5_files/figure-html/unnamed-chunk-19-1.png" width="100%" style="display: block; margin: auto;" /></p>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" tabindex="-1"></a><span class="co"># Plot COVID-19 deaths</span></span>
+<span id="cb29-2"><a href="#cb29-2" tabindex="-1"></a><span class="fu">tm_shape</span>(ne_cntry_covid[<span class="sc">!</span><span class="fu">is.na</span>(ne_cntry_covid<span class="sc">$</span>Year), ]) <span class="sc">+</span></span>
+<span id="cb29-3"><a href="#cb29-3" tabindex="-1"></a>  <span class="fu">tm_fill</span>(<span class="at">fill =</span> <span class="st">&quot;Norm_deaths2&quot;</span>,</span>
+<span id="cb29-4"><a href="#cb29-4" tabindex="-1"></a>       <span class="at">fill.scale =</span> <span class="fu">tm_scale_continuous_sqrt</span>(<span class="at">values =</span> <span class="st">&quot;brewer.pu_rd&quot;</span>),</span>
+<span id="cb29-5"><a href="#cb29-5" tabindex="-1"></a>          <span class="at">fill.legend =</span> <span class="fu">tm_legend</span>(<span class="at">title =</span> <span class="st">&quot;Deaths </span><span class="sc">\n</span><span class="st">[% cases]&quot;</span>)) <span class="sc">+</span></span>
+<span id="cb29-6"><a href="#cb29-6" tabindex="-1"></a>  <span class="fu">tm_crs</span>(<span class="st">&quot;+proj=mill&quot;</span>) <span class="sc">+</span>    </span>
+<span id="cb29-7"><a href="#cb29-7" tabindex="-1"></a>  <span class="fu">tm_facets_wrap</span>(<span class="at">by =</span> <span class="st">&quot;Year&quot;</span>, <span class="at">ncol =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb29-8"><a href="#cb29-8" tabindex="-1"></a><span class="fu">tm_shape</span>(ne_cntry_covid) <span class="sc">+</span>  <span class="fu">tm_borders</span>(<span class="at">col =</span> <span class="st">&quot;black&quot;</span>)</span></code></pre></div>
+<p><img src="r5_files/figure-html/unnamed-chunk-20-1.png" width="100%" style="display: block; margin: auto;" /></p>
+</div>
+<div id="month-of-highest-infections" class="section level2">
+<h2>Month of highest infections</h2>
+<p>Next, we aim to plot the month in 2020 during which the number of new
+cases peaked. To do this, we must first restrict the WHO data to 2020
+and then identify, for each country, the month with the highest number
+of cases.</p>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" tabindex="-1"></a><span class="co"># Filter the dataset for the year 2020</span></span>
+<span id="cb30-2"><a href="#cb30-2" tabindex="-1"></a><span class="co"># Select only rows where Date_reported is between January 5, 2020 and December 31, 2020</span></span>
+<span id="cb30-3"><a href="#cb30-3" tabindex="-1"></a><span class="co"># This effectively drops data for years other than 2020</span></span>
+<span id="cb30-4"><a href="#cb30-4" tabindex="-1"></a>covid_data_2020 <span class="ot">&lt;-</span> covid_data_cleaned <span class="sc">%&gt;%</span></span>
+<span id="cb30-5"><a href="#cb30-5" tabindex="-1"></a>  <span class="fu">filter</span>(Date_reported <span class="sc">&gt;=</span> <span class="fu">as.Date</span>(<span class="st">&quot;2020-01-05&quot;</span>) <span class="sc">&amp;</span> Date_reported <span class="sc">&lt;=</span> <span class="fu">as.Date</span>(<span class="st">&quot;2020-12-31&quot;</span>)) </span>
+<span id="cb30-6"><a href="#cb30-6" tabindex="-1"></a></span>
+<span id="cb30-7"><a href="#cb30-7" tabindex="-1"></a><span class="co"># Calculate monthly COVID-19 cases and deaths for 2020</span></span>
+<span id="cb30-8"><a href="#cb30-8" tabindex="-1"></a><span class="co"># Group the filtered data by Month and Country_code</span></span>
+<span id="cb30-9"><a href="#cb30-9" tabindex="-1"></a>covid_months <span class="ot">&lt;-</span> covid_data_2020 <span class="sc">%&gt;%</span></span>
+<span id="cb30-10"><a href="#cb30-10" tabindex="-1"></a>  <span class="fu">group_by</span>(Month, Country_code) <span class="sc">%&gt;%</span></span>
+<span id="cb30-11"><a href="#cb30-11" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb30-12"><a href="#cb30-12" tabindex="-1"></a>    <span class="co"># Sum new cases for each month and country,</span></span>
+<span id="cb30-13"><a href="#cb30-13" tabindex="-1"></a>    <span class="co"># treating any negative values as zero (using pmax(New_cases, 0))</span></span>
+<span id="cb30-14"><a href="#cb30-14" tabindex="-1"></a>    <span class="at">Cases =</span> <span class="fu">sum</span>(<span class="fu">pmax</span>(New_cases, <span class="dv">0</span>), <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb30-15"><a href="#cb30-15" tabindex="-1"></a>    <span class="co"># Sum new deaths similarly</span></span>
+<span id="cb30-16"><a href="#cb30-16" tabindex="-1"></a>    <span class="at">Deaths =</span> <span class="fu">sum</span>(<span class="fu">pmax</span>(New_deaths, <span class="dv">0</span>), <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb30-17"><a href="#cb30-17" tabindex="-1"></a>    <span class="co"># Remove grouping after summarisation</span></span>
+<span id="cb30-18"><a href="#cb30-18" tabindex="-1"></a>    <span class="at">.groups =</span> <span class="st">&#39;drop&#39;</span></span>
+<span id="cb30-19"><a href="#cb30-19" tabindex="-1"></a>  )</span>
+<span id="cb30-20"><a href="#cb30-20" tabindex="-1"></a></span>
+<span id="cb30-21"><a href="#cb30-21" tabindex="-1"></a><span class="co"># Extract the month with the maximum number of cases for each country</span></span>
+<span id="cb30-22"><a href="#cb30-22" tabindex="-1"></a><span class="co"># Group the monthly data by Country_code to work within each country separately</span></span>
+<span id="cb30-23"><a href="#cb30-23" tabindex="-1"></a>covid_months <span class="ot">&lt;-</span> covid_months <span class="sc">%&gt;%</span></span>
+<span id="cb30-24"><a href="#cb30-24" tabindex="-1"></a>  <span class="fu">group_by</span>(Country_code) <span class="sc">%&gt;%</span></span>
+<span id="cb30-25"><a href="#cb30-25" tabindex="-1"></a>  <span class="co"># For each country, select the row (month) with the highest number of Cases</span></span>
+<span id="cb30-26"><a href="#cb30-26" tabindex="-1"></a>  <span class="fu">slice_max</span>(<span class="at">order_by =</span> Cases, <span class="at">n =</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb30-27"><a href="#cb30-27" tabindex="-1"></a>  <span class="co"># Convert the Month column to numeric and create a new column with the month name</span></span>
+<span id="cb30-28"><a href="#cb30-28" tabindex="-1"></a>  <span class="co"># &#39;month.name&#39; is a built-in vector in R that contains the full names of months</span></span>
+<span id="cb30-29"><a href="#cb30-29" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Month =</span> <span class="fu">as.numeric</span>(<span class="fu">as.character</span>(Month)),</span>
+<span id="cb30-30"><a href="#cb30-30" tabindex="-1"></a>         <span class="at">Month_name =</span> month.name[Month]) <span class="sc">%&gt;%</span></span>
+<span id="cb30-31"><a href="#cb30-31" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="co"># Remove grouping</span></span>
+<span id="cb30-32"><a href="#cb30-32" tabindex="-1"></a></span>
+<span id="cb30-33"><a href="#cb30-33" tabindex="-1"></a><span class="co"># Join spatial data with monthly COVID-19 data</span></span>
+<span id="cb30-34"><a href="#cb30-34" tabindex="-1"></a><span class="co"># Perform a full join to merge ne_cntry with the COVID-19 monthly summary (covid_months)</span></span>
+<span id="cb30-35"><a href="#cb30-35" tabindex="-1"></a><span class="co"># using the common field &quot;Country_code&quot;</span></span>
+<span id="cb30-36"><a href="#cb30-36" tabindex="-1"></a>ne_cntry_covid_months <span class="ot">=</span> <span class="fu">full_join</span>(ne_cntry, covid_months, <span class="at">by =</span> <span class="fu">join_by</span>(Country_code))</span>
+<span id="cb30-37"><a href="#cb30-37" tabindex="-1"></a></span>
+<span id="cb30-38"><a href="#cb30-38" tabindex="-1"></a></span>
+<span id="cb30-39"><a href="#cb30-39" tabindex="-1"></a><span class="co"># Inspect the resulting dataset</span></span>
+<span id="cb30-40"><a href="#cb30-40" tabindex="-1"></a><span class="co"># Print the names of all columns in the merged dataset to verify the available fields</span></span>
+<span id="cb30-41"><a href="#cb30-41" tabindex="-1"></a><span class="fu">names</span>(ne_cntry_covid_months)</span></code></pre></div>
+<pre><code>##  [1] &quot;NAME&quot;         &quot;POP_EST&quot;      &quot;CONTINENT&quot;    &quot;REGION_UN&quot;    &quot;SUBREGION&quot;   
+##  [6] &quot;Country_code&quot; &quot;geometry&quot;     &quot;Month&quot;        &quot;Cases&quot;        &quot;Deaths&quot;      
+## [11] &quot;Month_name&quot;</code></pre>
+<p>Next, we visualise the months using tmap, aiming to assign similar
+colours to months that fall within the same season. By default, tmap
+displays the months in alphabetical order in the map legend. To ensure
+they appear in their proper chronological order, we convert the
+Month_name field into a factor with an ordered sequence.</p>
+<p>In R, a factor is a data type used to represent categorical
+variables. Instead of storing data as raw text or numbers, factors store
+data as a set of predefined categories called levels, each associated
+with an underlying integer code. This structure is especially useful for
+statistical analysis and visualisation, as it allows one to control the
+order of categories (for example, ensuring that months appear in
+chronological order rather than alphabetical order).</p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" tabindex="-1"></a><span class="co"># Define custom colours for each month</span></span>
+<span id="cb32-2"><a href="#cb32-2" tabindex="-1"></a><span class="co"># Create a named vector with custom hex colour codes for each month</span></span>
+<span id="cb32-3"><a href="#cb32-3" tabindex="-1"></a><span class="co"># These colours are taken from the met.demuth palette:</span></span>
+<span id="cb32-4"><a href="#cb32-4" tabindex="-1"></a><span class="co"># (https://github.com/BlakeRMills/MetBrewer).</span></span>
+<span id="cb32-5"><a href="#cb32-5" tabindex="-1"></a>custom_colours <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;January&quot;</span>  <span class="ot">=</span> <span class="st">&quot;#262d42&quot;</span>, </span>
+<span id="cb32-6"><a href="#cb32-6" tabindex="-1"></a>                    <span class="st">&quot;February&quot;</span> <span class="ot">=</span> <span class="st">&quot;#41485f&quot;</span>, </span>
+<span id="cb32-7"><a href="#cb32-7" tabindex="-1"></a>                    <span class="st">&quot;March&quot;</span>    <span class="ot">=</span> <span class="st">&quot;#f7c267&quot;</span>,  </span>
+<span id="cb32-8"><a href="#cb32-8" tabindex="-1"></a>                    <span class="st">&quot;April&quot;</span>    <span class="ot">=</span> <span class="st">&quot;#e5ae4a&quot;</span>, </span>
+<span id="cb32-9"><a href="#cb32-9" tabindex="-1"></a>                    <span class="st">&quot;May&quot;</span>      <span class="ot">=</span> <span class="st">&quot;#d39a2d&quot;</span>, </span>
+<span id="cb32-10"><a href="#cb32-10" tabindex="-1"></a>                    <span class="st">&quot;June&quot;</span>     <span class="ot">=</span> <span class="st">&quot;#b64f32&quot;</span>,  </span>
+<span id="cb32-11"><a href="#cb32-11" tabindex="-1"></a>                    <span class="st">&quot;July&quot;</span>     <span class="ot">=</span> <span class="st">&quot;#9b332b&quot;</span>, </span>
+<span id="cb32-12"><a href="#cb32-12" tabindex="-1"></a>                    <span class="st">&quot;August&quot;</span>   <span class="ot">=</span> <span class="st">&quot;#591c19&quot;</span>,  </span>
+<span id="cb32-13"><a href="#cb32-13" tabindex="-1"></a>                    <span class="st">&quot;September&quot;</span><span class="ot">=</span> <span class="st">&quot;#b9b9b8&quot;</span>,  </span>
+<span id="cb32-14"><a href="#cb32-14" tabindex="-1"></a>                    <span class="st">&quot;October&quot;</span>  <span class="ot">=</span> <span class="st">&quot;#8b8b99&quot;</span>,  </span>
+<span id="cb32-15"><a href="#cb32-15" tabindex="-1"></a>                    <span class="st">&quot;November&quot;</span> <span class="ot">=</span> <span class="st">&quot;#5d6174&quot;</span>,  </span>
+<span id="cb32-16"><a href="#cb32-16" tabindex="-1"></a>                    <span class="st">&quot;December&quot;</span> <span class="ot">=</span> <span class="st">&quot;#4F556A&quot;</span>) </span>
+<span id="cb32-17"><a href="#cb32-17" tabindex="-1"></a></span>
+<span id="cb32-18"><a href="#cb32-18" tabindex="-1"></a><span class="co"># Set factor levels for Month_name</span></span>
+<span id="cb32-19"><a href="#cb32-19" tabindex="-1"></a><span class="co"># Convert Month_name into a factor with levels ordered as specified in custom_colours</span></span>
+<span id="cb32-20"><a href="#cb32-20" tabindex="-1"></a><span class="co"># This ensures that the colours in plots follow the intended order (January to December)</span></span>
+<span id="cb32-21"><a href="#cb32-21" tabindex="-1"></a>ne_cntry_covid_months<span class="sc">$</span>Month_name <span class="ot">&lt;-</span> <span class="fu">factor</span>(ne_cntry_covid_months<span class="sc">$</span>Month_name,</span>
+<span id="cb32-22"><a href="#cb32-22" tabindex="-1"></a>                                           <span class="at">levels =</span> <span class="fu">names</span>(custom_colours))</span>
+<span id="cb32-23"><a href="#cb32-23" tabindex="-1"></a></span>
+<span id="cb32-24"><a href="#cb32-24" tabindex="-1"></a><span class="co"># Plot the month with highest COVID-19 infection numbers in 2020</span></span>
+<span id="cb32-25"><a href="#cb32-25" tabindex="-1"></a><span class="co"># Extract the bounding box for the spatial object &#39;ne_box&#39; to ensure </span></span>
+<span id="cb32-26"><a href="#cb32-26" tabindex="-1"></a><span class="co"># the map covers the desired area</span></span>
+<span id="cb32-27"><a href="#cb32-27" tabindex="-1"></a>bbox_box <span class="ot">&lt;-</span> <span class="fu">st_bbox</span>(ne_box)</span>
+<span id="cb32-28"><a href="#cb32-28" tabindex="-1"></a></span>
+<span id="cb32-29"><a href="#cb32-29" tabindex="-1"></a><span class="co"># Start creating the map:</span></span>
+<span id="cb32-30"><a href="#cb32-30" tabindex="-1"></a><span class="fu">tm_shape</span>(ne_cntry_covid_months[<span class="sc">!</span><span class="fu">is.na</span>(ne_cntry_covid_months<span class="sc">$</span>Month), ], <span class="at">bbox =</span> bbox_box) <span class="sc">+</span></span>
+<span id="cb32-31"><a href="#cb32-31" tabindex="-1"></a>  <span class="co"># Fill the country polygons based on the &#39;Month_name&#39; field</span></span>
+<span id="cb32-32"><a href="#cb32-32" tabindex="-1"></a>  <span class="co"># Use the custom_colours for the fill scale by passing them via tm_scale()</span></span>
+<span id="cb32-33"><a href="#cb32-33" tabindex="-1"></a>  <span class="fu">tm_fill</span>(<span class="at">fill =</span> <span class="st">&quot;Month_name&quot;</span>,</span>
+<span id="cb32-34"><a href="#cb32-34" tabindex="-1"></a>          <span class="at">fill.scale =</span> <span class="fu">tm_scale</span>(<span class="at">values =</span> custom_colours),</span>
+<span id="cb32-35"><a href="#cb32-35" tabindex="-1"></a>          <span class="at">fill.legend =</span> <span class="fu">tm_legend</span>(<span class="at">title =</span> <span class="st">&quot;Month&quot;</span>)) <span class="sc">+</span></span>
+<span id="cb32-36"><a href="#cb32-36" tabindex="-1"></a>  <span class="co"># Set the coordinate reference system to Robinson projection for a balanced global view</span></span>
+<span id="cb32-37"><a href="#cb32-37" tabindex="-1"></a>  <span class="fu">tm_crs</span>(<span class="st">&quot;+proj=robin&quot;</span>) <span class="sc">+</span></span>
+<span id="cb32-38"><a href="#cb32-38" tabindex="-1"></a>  <span class="co"># Remove the default frame around the map</span></span>
+<span id="cb32-39"><a href="#cb32-39" tabindex="-1"></a>  <span class="fu">tm_layout</span>(<span class="at">frame =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb32-40"><a href="#cb32-40" tabindex="-1"></a>  <span class="co"># Add a scale bar with specified position, break points, and width</span></span>
+<span id="cb32-41"><a href="#cb32-41" tabindex="-1"></a>  <span class="fu">tm_scalebar</span>(<span class="at">position =</span> <span class="fu">c</span>(<span class="st">&quot;left&quot;</span>, <span class="st">&quot;center&quot;</span>), <span class="at">breaks =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">2500</span>,<span class="dv">5000</span>), <span class="at">width =</span> <span class="dv">20</span>) <span class="sc">+</span></span>
+<span id="cb32-42"><a href="#cb32-42" tabindex="-1"></a>  <span class="co"># Add a title to the map</span></span>
+<span id="cb32-43"><a href="#cb32-43" tabindex="-1"></a>  <span class="fu">tm_title</span>(<span class="st">&quot;Month with highest COVID-19 infection numbers (2020)&quot;</span>, <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb32-44"><a href="#cb32-44" tabindex="-1"></a>  <span class="co"># Overlay the country boundaries for clarity by adding another layer</span></span>
+<span id="cb32-45"><a href="#cb32-45" tabindex="-1"></a>  <span class="fu">tm_shape</span>(ne_cntry) <span class="sc">+</span> <span class="fu">tm_borders</span>(<span class="at">col =</span> <span class="st">&quot;black&quot;</span>) <span class="sc">+</span></span>
+<span id="cb32-46"><a href="#cb32-46" tabindex="-1"></a>  <span class="co"># Overlay the bounding box for geographic context</span></span>
+<span id="cb32-47"><a href="#cb32-47" tabindex="-1"></a>  <span class="fu">tm_shape</span>(ne_box) <span class="sc">+</span> <span class="fu">tm_borders</span>(<span class="st">&quot;black&quot;</span>)</span></code></pre></div>
+<p><img src="r5_files/figure-html/unnamed-chunk-22-1.png" width="100%" style="display: block; margin: auto;" /></p>
+<p>The map indicates that, at least during the first year of the
+COVID‑19 pandemic, infection rates peaked during the colder months in
+both the northern and southern hemispheres, with only a few
+exceptions.</p>
+</div>
+</div>
+<div id="summary" class="section level1">
+<h1>Summary</h1>
+<p>In this practical, we used R to generate a series of maps
+illustrating the spatial distribution of COVID‑19 cases and deaths,
+based on data obtained from the WHO. The exercise demonstrated the
+utility of the <strong>dplyr</strong> package from the
+<strong>tidyverse</strong> for data wrangling and the
+<strong>tmap</strong> package for map visualisation. The
+<strong>sf</strong> package was employed to import the spatial data into
+a spatial data frame, thereby facilitating the creation of these
+maps.</p>
+</div>
+<div id="list-of-r-functions" class="section level1">
+<h1>List of R functions</h1>
+<p>This practical showcased a diverse range of R functions. A summary of
+these is presented below:</p>
+<p><strong>base R functions</strong></p>
+<ul>
+<li><p><code>as.Date()</code>: converts character or numeric data into a
+Date object using a specified format. It is essential for handling date
+arithmetic and comparisons in time‐series analysis.</p></li>
+<li><p><code>as.character()</code>: converts its input into character
+strings. It is often used to ensure that numerical or factor data are
+treated as text when needed.</p></li>
+<li><p><code>as.numeric()</code>: converts its argument into numeric
+form, which is essential when performing mathematical operations. It is
+often used to change factors or character strings into numbers for
+computation.</p></li>
+<li><p><code>attr()</code>: is used to access or modify the attributes
+of an R object, such as names, dimensions, or class. It allows you to
+retrieve metadata stored within an object or to assign new attribute
+values when needed.</p></li>
+<li><p><code>c()</code>: concatenates its arguments to create a vector,
+which is one of the most fundamental data structures in R. It is used to
+combine numbers, strings, and other objects into a single
+vector.</p></li>
+<li><p><code>factor()</code>: creates a factor (categorical variable)
+from a vector, optionally with a predefined set of levels. Factors are
+crucial for statistical modelling and for controlling the ordering of
+categories in plots.</p></li>
+<li><p><code>format()</code>: converts objects to character strings with
+a specified format, particularly useful for dates and numbers. It helps
+in standardising the display of data for reporting and
+plotting.</p></li>
+<li><p><code>head()</code>: returns the first few elements or rows of an
+object, such as a vector, matrix, or data frame. It is a convenient tool
+for quickly inspecting the structure and content of data.</p></li>
+</ul>
+<p><strong>dplyr (tidyverse) functions</strong></p>
+<ul>
+<li><p><code>%&gt;%</code> (pipe operator): passes the output of one
+function directly as the input to the next, creating a clear and
+readable chain of operations. It is a hallmark of the tidyverse,
+promoting an intuitive coding style.</p></li>
+<li><p><code>filter()</code>: subsets rows of a data frame based on
+specified logical conditions. It is essential for extracting relevant
+data for analysis.</p></li>
+<li><p><code>full_join()</code>: merges two data frames by one or more
+common key columns, keeping all rows from both sets. It is particularly
+useful when combining spatial and non-spatial data to ensure no
+information is lost.</p></li>
+<li><p><code>group_by()</code>: organises data into groups based on one
+or more variables, setting the stage for group-wise operations. It is
+often used together with summarise or mutate.</p></li>
+<li><p><code>if_else()</code>: evaluates a condition for each element of
+a vector and returns one value if the condition is TRUE and another if
+it is FALSE. It is a vectorised alternative to the standard if/else
+statement that prevents unexpected recycling and maintains type
+consistency.</p></li>
+<li><p><code>join_by()</code>: specifies columns to be used for joining
+two data frames, clarifying the join criteria. It enhances the
+readability and flexibility of join operations in dplyr.</p></li>
+<li><p><code>mutate()</code>: adds new columns or transforms existing
+ones within a data frame. It is essential for creating derived variables
+and modifying data within the tidyverse workflow.</p></li>
+<li><p><code>pmax()</code>: returns the parallel (element-wise) maximum
+of its input vectors, often used to set lower bounds (e.g. converting
+negative values to zero). It helps to enforce non-negativity in
+aggregated data such as case counts.</p></li>
+<li><p><code>rename()</code>: changes column names in a data frame to
+make them more descriptive or consistent. It is an important tool for
+data cleaning and organization.</p></li>
+<li><p><code>select()</code>: extracts a subset of columns from a data
+frame based on specified criteria. It simplifies data frames by keeping
+only the variables needed for analysis.</p></li>
+<li><p><code>slice_max()</code>: selects rows with the highest values in
+a specified column, useful for identifying maximum cases within groups.
+It is a straightforward way to pinpoint the top observation in each
+subgroup.</p></li>
+<li><p><code>summarise()</code>: reduces multiple values down to a
+single summary statistic per group in a data frame. When used with
+<code>group_by()</code>, it facilitates the computation of aggregates
+such as mean, sum, or count.</p></li>
+<li><p><code>ungroup()</code>: removes grouping from a data frame that
+was previously grouped using group_by(). It resets the data structure to
+prevent unintended effects on subsequent analyses.</p></li>
+</ul>
+<p><strong>readr (tidyverse) functions</strong></p>
+<ul>
+<li><code>read_csv()</code>: reads a CSV file into a tibble (a modern
+version of a data frame) while providing options for handling missing
+values and specifying column types. It is optimized for speed and
+ease-of-use, making data import straightforward in the tidyverse.</li>
+</ul>
+<p><strong>ggplot2 (tidyverse) functions</strong></p>
+<ul>
+<li><p><code>aes()</code>: defines aesthetic mappings in ggplot2 by
+linking data variables to visual properties such as color, size, and
+shape. It forms the core of ggplot2’s grammar for mapping data to
+visuals.</p></li>
+<li><p><code>facet_wrap()</code>: splits a ggplot2 plot into multiple
+panels based on a factor variable, allowing for side-by-side comparison
+of subsets. It automatically arranges panels into a grid to reveal
+patterns across groups.</p></li>
+<li><p><code>geom_line()</code>: adds line geometries to a plot,
+connecting data points in sequence. It is commonly used to show trends
+over time or relationships between continuous variables.</p></li>
+<li><p><code>ggplot()</code>: initialises a ggplot object and
+establishes the framework for creating plots using the grammar of
+graphics. It allows for incremental addition of layers, scales, and
+themes to build complex visualizations.</p></li>
+<li><p><code>labs()</code>: allows you to add or modify labels in a
+ggplot2 plot, such as titles, axis labels, and captions. It enhances the
+readability and interpretability of visualizations.</p></li>
+<li><p><code>scale_x_date()</code>: customises the x-axis for date data,
+allowing specification of breaks and labels. It is particularly useful
+for time-series data where controlling date formatting enhances
+readability.</p></li>
+<li><p><code>scale_y_log10()</code>: applies a logarithmic
+transformation (base 10) to the y-axis scale, which can help in
+visualising data with a wide range or exponential growth. It makes
+subtle trends more apparent by compressing large values.</p></li>
+<li><p><code>theme()</code>: modifies non-data elements of a ggplot,
+such as fonts, colors, and backgrounds. It provides granular control
+over the overall appearance of the plot.</p></li>
+<li><p><code>unit()</code>: constructs unit objects that specify
+measurements for graphical parameters, such as centimeters or inches. It
+is often used in layout and annotation functions for precise control
+over plot elements.</p></li>
+</ul>
+<p><strong>sf functions</strong></p>
+<ul>
+<li><code>read_sf()</code>: reads spatial data from various file formats
+into an sf object. It simplifies the import of geographic data for
+spatial analysis.</li>
+</ul>
+<p><strong>tmap functions</strong></p>
+<ul>
+<li><p><code>tm_borders()</code>: draws border lines around spatial
+objects on a map. It is often used in combination with fill functions to
+delineate regions clearly.</p></li>
+<li><p><code>tm_crs()</code>: sets or retrieves the coordinate reference
+system for a tmap object. It ensures that all spatial layers are
+correctly projected.</p></li>
+<li><p><code>tm_facets_wrap()</code>: creates a faceted layout by
+splitting a map into multiple panels based on a grouping variable. It is
+useful for comparing maps across different time periods or
+categories.</p></li>
+<li><p><code>tm_fill()</code>: fills spatial objects with color based on
+data values or specified aesthetics in a tmap. It is a key function for
+thematic mapping.</p></li>
+<li><p><code>tm_layout()</code>: customises the overall layout of a
+tmap, including margins, frames, and backgrounds. It provides fine
+control over the visual presentation of the map.</p></li>
+<li><p><code>tm_legend()</code>: customises the appearance and title of
+map legends in tmap. It is used to enhance the clarity and presentation
+of map information.</p></li>
+<li><p><code>tm_scale()</code>: customises the colour scale used in tmap
+fills, enabling the application of continuous or categorical colour
+palettes. It supports both numeric transformations and the assignment of
+custom values.</p></li>
+<li><p><code>tm_scalebar()</code>: adds a scale bar to a tmap to
+indicate distance. It can be customised in terms of breaks, text size,
+and position.</p></li>
+<li><p><code>tm_scale_continuous()</code>: applies a continuous color
+scale to a raster layer in tmap. It is suitable for representing numeric
+data with smooth gradients.</p></li>
+<li><p><code>tm_scale_continuous_sqrt()</code>: applies a square root
+transformation to a continuous color scale in tmap. It is useful for
+visualizing data with skewed distributions.</p></li>
+<li><p><code>tm_shape()</code>: defines the spatial object that
+subsequent tmap layers will reference. It establishes the base layer for
+building thematic maps.</p></li>
+<li><p><code>tm_title()</code>: adds a title and optional subtitle to a
+tmap, providing descriptive context. It helps clarify the purpose and
+content of the map.</p></li>
+<li><p><code>tmap_mode()</code>: switches between static (“plot”) and
+interactive (“view”) mapping modes in tmap. It allows users to choose
+the most appropriate display format for their needs.</p></li>
+</ul>
+</div>
 
 
 
+</div>
+</div>
 
 </div>
 
@@ -356,6 +1604,35 @@ $(document).ready(function () {
 
 <!-- code folding -->
 
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = false;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
 
 <!-- dynamically load mathjax for compatibility with self-contained -->
 <script>
